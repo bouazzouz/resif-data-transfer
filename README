@@ -2,11 +2,10 @@
 RESIF DATA TRANSFER
 
 an helper script to send data to RESIF datacentre and get 
-transaction status back from the 
+transaction status back. 
 
 online help :
 
-$ resif-data-transfer.py --help
-
+$ ResifDataTransfer.py --help
 
 
