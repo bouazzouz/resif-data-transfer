@@ -1,0 +1,107 @@
+#
+# RESIF DATA TRANSFER Configuration file
+#
+# Parameters in this file are organised into [sections].
+# Sections and parameters order is not sensitive.
+# String values are case-sensitive.
+# Boolean values may be equal to "1/yes/true/on" or "0/no/false/off"
+#
+# Every parameters in this file must exist, even if most 
+# may be let blank (default value will be used).
+#
+# When possible, badly formatted fields will be replaced by default values:
+# these are available for checking into the log file.
+#
+# When upgrading the script, backup this file for reuse.
+#
+
+[my resif node] 
+
+; Set your node name as specified within resif
+my node name = 
+
+; Set your node password as specified within resif
+my node password = 
+
+[system]
+working directory = 
+
+; Set to 'yes' if you want the script to automatically 
+; find 'du' command on your system. Else set to 'no'. 
+disk usage command auto find = yes
+
+; Full path to du binary (e.g. /usr/bin/du).
+; this field is used only if "disk usage command auto find" is 'no'.
+; You may call another command, as long as it is compatible with du output.
+disk usage command full path = /usr/bin/du
+
+; Arguments for calling the disk usage command.
+; If you are not using du, your command behaviour must be the same as GNU du.
+disk usage command arguments = --bytes --summarize
+
+[rsync]
+
+; Set to 'yes' if you want the script to automatically 
+; find rsync on your system. Else set to 'no'. 
+rsync command auto find = yes
+
+; Full path to rsync binary (e.g. /usr/bin/rsync).
+; this field is used only if "rsync command auto_find" is 'no'
+rsync command full path = /usr/bin/rsync
+
+; FQDN of remote rsync server 
+; This field may be let empty for default value.
+rsync server = 
+
+; TCP port of remote rsync server
+; This field may be let empty for default value.
+rsync port = 
+
+; Compress files during data transfer.
+; Compression should only be used on slow networks.
+; This field may be let empty for default value.
+rsync compress =
+
+; Timeout for connection to rsync server (seconds).
+; You don't need to change this unless you get transfer
+; errors due to very slow network speed.
+; This field may be let empty for default value.
+rsync timeout = 
+
+; Additional parameters for rsync.
+; Only change this if you know what you are doing
+; or if asked by remote datacenter operator.
+; This field may be let empty for default value.
+rsync extra args =
+
+[logging]
+
+; General logs go into this file (must be writable).
+; If file does not exist, it will be created.
+; It is advised to rotate this file periodically (eg. with logrorate)
+log file = 
+
+; log level
+; must be one of : DEBUG, INFO, WARNING, ERROR, CRITICAL
+; This field may be let empty for default value.
+log level = DEBUG
+
+; Transfer logbook is written into this file (must be writable).
+; This file contains a history of your previous transfers.
+; This file has a specific format but may be read with provived tool (FIXME).
+; If file does not exist, it will be created.
+logbook = 
+
+[limits]
+
+; Limit I/O bandwith (Kbytes per second)
+; See script documentation for ignoring this parameter at runtime.
+; This field may be let empty for default value.
+bandwidth max =
+
+; Maximum amount of data (in Gigabytes) to be sent to remote rsync server over a 7 days window. 
+; This parameter is specified within resif, but may be bypassed for special needs, 
+; in accordance with remote server operators.
+; See script documentation for ignoring this parameter at runtime.
+; This field may be let empty for default value.
+weekly max size = 
