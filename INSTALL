@@ -1,0 +1,135 @@
+
+#
+# SYSTEM REQUIREMENTS
+#
+
+- this program is validated for
+    - Redhat Enteprise Linux, v6.0 and above, 32 or 64 bits
+    - Debian Linux, Lenny and above, 32 or 64 bits
+    - however, this program should work under any modern unix/linux 
+
+You also need:
+
+- a working 'rsync' command (version 3.0.6 and above). Check your rsync command
+by entering :
+
+$ rsync --version
+
+- a working GNU 'du' command. Most often, du is provided with GNU coreutils, 
+version 8.4 or above is advised. Check your du command by entering:
+
+$ du --version
+
+- you need a working Python interpreter on your system (version 2.6.6 and
+above), with its full standard library. This program does not work with 
+Python 3.x. Check your python interprter by entering:
+
+$ /usr/bin/env python --version
+
+# 
+# NETWORK REQUIREMENTS
+#
+
+- you need a working rsync connection to resif rsync server :
+
+You may check your IP connectivity is working using 'nc', eg:
+
+$ nc -z rsync.resif.fr 873
+
+should return :
+
+> Connection to rsync.resif.fr 873 port [tcp/rsync] succeeded!
+
+If you don't have nc, you may use telnet, eg:
+ 
+$ telnet rsync.resif.fr 873 
+
+should return:
+
+Trying xxx.xxx.xx.xx ...
+Connected to rsync.resif.fr.
+Escape character is '^]'.
+@RSYNCD: xx.yy
+
+If your IP connection to the remote rsync server does not work :
+
+- first, check with RESIF datacenter operator that the remote server is
+up and running
+ 
+- then, check with your own IT team that you are allowed to reach 
+port tcp/873 on rsync.resif.fr
+
+#
+# AUTHENTICATION REQUIREMENTS
+#
+
+Before you begin transferring some data, RESIF datacenter operator must 
+provide you with :
+
+- your node name
+- your node password (must be kept secret)
+
+For each each data type you will transfer, you must tell RESIF datacenter 
+operator the address (FQDN) of the machine you will be performing the 
+transfer from. DNS aliases name are allowed. 
+
+There can be only one transferring machine per data type. You may also 
+use a single machine for all data types.
+
+#
+# INSTALLING 
+#
+
+- Choose a local user the program will run from:
+    - this user should have read access to the data you want to transfer
+    - you should never run under root
+
+In this example, we will run from "sysop" user.
+
+- Choose an installation directory: in this example, we will install in ~sysop/
+but you may want to choose a shared directory if the program must be used 
+by multiple users (eg: /usr/local)
+
+Unpack the tarball :
+
+$ tar xvzf resif-data-transfer.tgz
+
+Move the contents to installation directory :
+
+$ mv resif-data-transfer ~sysop/
+
+Link executable to user's standard path, eg:
+
+$ ln -s ~sysop/resif-data-transfer/ResifDataTransfer.py ~sysop/bin/
+
+#
+# CONFIGURING
+#
+
+By default, configuration file will be searched in base directory, eg:
+
+~sysop/resif-data-transfer/ResifDataTransfer.conf
+
+You may want to use an alternate configuration path (see -c option).
+
+A template configuration is provided in ResifDataTransfer.conf.dist :
+copy this file to create your new configuration file :
+
+$ cd ~sysop/resif-data-transfer/
+$ cp ResifDataTransfer.conf.dist ResifDataTransfer.conf
+
+Edit according to your requirements.
+
+#
+# UPGRADING
+#
+
+fixme
+
+#
+# BACKUPS
+#
+
+fixme
+
+

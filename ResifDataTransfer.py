@@ -32,7 +32,7 @@ class ResifDataTransfer():
     
   # script version (year, julian day)
   APPNAME = 'RESIF data transfer'
-  VERSION = (2013, 53)
+  VERSION = (2013, 88)
 
   # contact string
   CONTACT = 'FIXME'
@@ -80,7 +80,7 @@ class ResifDataTransfer():
         'rsync timeout':[int,10], 'rsync extra args':[str,None]
         },
     'logging' : { 'log file':[str,None],'log level':[str,'WARNING'], 'logbook':[str,None] },
-    'limits': { 'weekly max size':[int,100], 'bandwidth max':[int,None] } ,
+    'limits': { 'weekly max size':[int,150], 'bandwidth max':[int,None] } ,
     }
  
   # values for 'my node name'
@@ -89,7 +89,10 @@ class ResifDataTransfer():
   # values for debug level
   # http://docs.python.org/2.6/library/logging.html#logging-levels
   __LOG_LEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
- 
+
+  # transaction file
+  TRANSACTION_XML = 'transaction.xml'
+   
   # test modes & ignore limits
   myTestOnly = False
   myDebug = True
@@ -202,11 +205,13 @@ class ResifDataTransfer():
       
   def start ( self ):
     """ dispatches requested operation """
+    returncode = 1
     if self.myTestOnly: logging.warning('Running in test mode : no actual transfer will be done.')
     if self.ignoreLimits: logging.warning('Ignoring limits set in configuration file.')
-    if self.myOperation == self.OPERATIONS['SEND_DATA']: self.send_data()
-    elif self.myOperation == self.OPERATIONS['RETRIEVE_LOGS']: self.retrieve_logs()
-  
+    if self.myOperation == self.OPERATIONS['SEND_DATA']: returncode = self.send_data()
+    elif self.myOperation == self.OPERATIONS['RETRIEVE_LOGS']: returncode = self.retrieve_logs()
+    return returncode
+    
   def logbook_compute_size ( self, offset = None):
     """
     compute total size of transfers done so far.
@@ -221,15 +226,7 @@ class ResifDataTransfer():
       logdate = datetime.strptime( log['date'], self.__DATE_FORMAT )
       if logdate >= mindate: size += log['size']
     return size
-
-  def retrieve_logs ( self ):
-    """ runs the RETRIEVE_LOGS operation"""
-    logging.info ("Getting XML file from rsync server for transaction %s" % self.myTransactionID)
-    # send XML file,
-    if not self.myTestOnly:
-        #self.myRsync.push ( source = temppath, destination = os.path.join(self.myTransactionID,'transaction.xml') )
-        pass
-  
+    
   def send_data ( self ):
     """ runs the SEND_DATA operation """
     # calculate dir size
@@ -292,7 +289,7 @@ class ResifDataTransfer():
     # send XML file,
     if not self.myTestOnly:
         logging.info ('Calling rsync to transfer XML file %s' % temppath)
-        self.myRsync.push ( source = temppath, destination = os.path.join(self.myTransactionID,'transaction.xml') )
+        self.myRsync.push ( source = temppath, destination = os.path.join(self.myTransactionID, self.TRANSACTION_XML) )
     # update logbook
     self.myLogbook.append ( { 'date': now,
         'node': self.__CONFIG['my resif node']['my node name'][1],
@@ -303,6 +300,30 @@ class ResifDataTransfer():
     if not self.myTestOnly:
       logging.info ('Updating transfer loogbook')
       with open ( self.__CONFIG['logging']['logbook'][1], 'w' ) as f: json.dump(self.myLogbook,f,indent=2) 
+    # on success, prints transaction ID on stdout and returns 0
+    sys.stderr.write ( self.myTransactionID+'\n' )
+    return 0
+
+  def retrieve_logs ( self ):
+    """ runs the RETRIEVE_LOGS operation"""
+    # get remote XML file and print it on stdout,
+    tempxml= os.path.join ( self.__CONFIG['system']['working directory'][1], 'tmpxml' + self.myTransactionID )
+    if not self.myTestOnly:
+        logging.info ("Getting XML file from rsync server for transaction %s" % self.myTransactionID)
+        try:
+            self.myRsync.pull ( remote = os.path.join ( self.myTransactionID, self.TRANSACTION_XML ), local = tempxml )
+        except:
+            msg='Could not retrieve XML file for this transaction.'
+            logging.error ( msg )
+            sys.stderr.write ( msg + '\n' )
+            return 1
+        # cat temp file on stdout
+        with open(tempxml,'r') as f: 
+            data = f.read()
+            sys.stdout.write(data)
+        # remove temp file
+        os.remove(tempxml)    
+    return 0
     
   if __name__ == "__main__":
 
@@ -370,29 +391,27 @@ class ResifDataTransfer():
         )
       
       # launch operation
-      myTransfer.start()
+      returncode = myTransfer.start()
       
     # error while parsing command line arguments  
     except getopt.GetoptError, err:
       stderr.write ( str(err) + '. Use -h to display usage.\n' )
       returncode = 2
-    #except KeyboardInterrupt:
-      # FIXME 
-    except Exception, myException:
+    except KeyboardInterrupt:
+      logging.error ('keyboard interrupt')
       if myDebug: raise
-      else:
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        alltraces = traceback.extract_tb ( exc_traceback )
-        last = alltraces.pop()
-        stderr.write( 'ERROR\n  in file %s\n' % last[0] )
-        stderr.write( '  at line %s in %s\n' % ( last[1], last[2] )  )
-        stderr.write( '  %s\n' % last[3] )
-        stderr.write ( 'DETAILS\n  %s\n' % str(myException) )
+    except Exception, myException:
+      returncode = 1
+      exc_type, exc_value, exc_traceback = sys.exc_info()
+      alltraces = traceback.extract_tb ( exc_traceback )
+      last = alltraces.pop()
+      stderr.write( 'ERROR\n  in file %s\n' % last[0] )
+      stderr.write( '  at line %s in %s\n' % ( last[1], last[2] )  )
+      stderr.write( '  %s\n' % last[3] )
+      stderr.write ( 'DETAILS\n  %s\n' % str(myException) )
+      if myDebug: raise
     # executed if no exception was raised
-    else: pass # FIXME
+    else: pass
     # executed anytime
-    finally: pass # FIXME
-   
-    # exit
-    sys.exit ( returncode )
+    finally: sys.exit ( returncode )
   

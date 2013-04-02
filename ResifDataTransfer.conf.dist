@@ -1,16 +1,16 @@
 #
 # RESIF DATA TRANSFER Configuration file
 #
-# Parameters in this file are organised into [sections].
+# Parameters in this file are organised into sections, [between brackets].
 # Sections and parameters order is not sensitive.
 # String values are case-sensitive.
-# Boolean values may be equal to "1/yes/true/on" or "0/no/false/off"
+# Boolean values may be equal to 1/yes/true/on or 0/no/false/off
 #
-# Every parameters in this file must exist, even if most 
+# Every parameters in this file *must exist*, even if most 
 # may be let blank (default value will be used).
 #
-# When possible, badly formatted fields will be replaced by default values:
-# these are available for checking into the log file.
+# In some case, badly formatted fields will be replaced 
+# by default values : check your log file entries.
 #
 # When upgrading the script, backup this file for reuse.
 #
@@ -24,6 +24,8 @@ my node name =
 my node password = 
 
 [system]
+
+; a directory where the script may write temporary files
 working directory = 
 
 ; Set to 'yes' if you want the script to automatically 
@@ -32,7 +34,7 @@ disk usage command auto find = yes
 
 ; Full path to du binary (e.g. /usr/bin/du).
 ; this field is used only if "disk usage command auto find" is 'no'.
-; You may call another command, as long as it is compatible with du output.
+; You may call another command, as long as it is compatible with du output format.
 disk usage command full path = /usr/bin/du
 
 ; Arguments for calling the disk usage command.
@@ -49,7 +51,7 @@ rsync command auto find = yes
 ; this field is used only if "rsync command auto_find" is 'no'
 rsync command full path = /usr/bin/rsync
 
-; FQDN of remote rsync server 
+; Remote rsync server address
 ; This field may be let empty for default value.
 rsync server = 
 
@@ -71,14 +73,13 @@ rsync timeout =
 ; Additional parameters for rsync.
 ; Only change this if you know what you are doing
 ; or if asked by remote datacenter operator.
-; This field may be let empty for default value.
 rsync extra args =
 
 [logging]
 
 ; General logs go into this file (must be writable).
 ; If file does not exist, it will be created.
-; It is advised to rotate this file periodically (eg. with logrorate)
+; It is advised to rotate this file periodically (eg. use 'logrorate')
 log file = 
 
 ; log level
@@ -88,20 +89,23 @@ log level = DEBUG
 
 ; Transfer logbook is written into this file (must be writable).
 ; This file contains a history of your previous transfers.
-; This file has a specific format but may be read with provived tool (FIXME).
+; This file is JSON formatted, and may be read with provived tool.
 ; If file does not exist, it will be created.
+; You may want to include this file in your backups.
 logbook = 
 
 [limits]
 
 ; Limit I/O bandwith (Kbytes per second)
-; See script documentation for ignoring this parameter at runtime.
-; This field may be let empty for default value.
-bandwidth max =
+; See also script documentation for bypassing this parameter at runtime.
+; This field may be let empty for default value (no limit)
+bandwidth max = 
 
-; Maximum amount of data (in Gigabytes) to be sent to remote rsync server over a 7 days window. 
-; This parameter is specified within resif, but may be bypassed for special needs, 
-; in accordance with remote server operators.
-; See script documentation for ignoring this parameter at runtime.
+; Maximum amount of data (in Gigabytes) to be sent to remote rsync server 
+; over a 7 days window. This parameter is specified within resif, but may be 
+; bypassed for special needs, when agreed with remote server operators.
+; See also script documentation for bypassing this parameter at runtime.
 ; This field may be let empty for default value.
 weekly max size = 
+
+

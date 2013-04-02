@@ -38,6 +38,24 @@ class Rsync():
       mysocket.close()
     except Exception, err : raise Exception ( "Problem while checking rsync server : %s " % err )
 
+  def build_base_command_line ( self ):
+    """returns skeleton for rsync command line (without source nor destination)"""
+    # setup rsync parameters
+    # about --out-format : it is important that %n comes last :
+    # makes parsing the line with special chars in filenames easier
+    mycommandline = [ self.myCommand,
+        '-rtx', 
+        '--exclude=lost+found/',
+        '--out-format=%i %l %n',
+        ]
+    if self.myDryRun: mycommandline.append ('-n')
+    if self.myCompress: mycommandline.append ('-z')
+    if self.myBandwitdhLimit: mycommandline.append ('--bwlimit=%i' % self.myBandwitdhLimit)
+    if self.myExtraArgs: 
+      eargs = shlex.split( self.myExtraArgs )
+      for arg in eargs: mycommandline.append ( arg )
+    return mycommandline
+    
   def push ( self, source, destination = None ) :
     """
     push 'source' (directory, file) to remote module.
@@ -46,20 +64,8 @@ class Rsync():
     with format '%i %l %n' (see rsyncd.conf manpage, section 'log format').
     Warning : %n may contains special characters depending on filenames.
     """
-    # setup rsync parameters
-    # about out format : it is important that %n comes last :
-    # makes parsing the line with special chars in filenames easier
-    mycommandline = [ self.myCommand,
-      '-rtx', 
-      '--exclude=lost+found/',
-      '--out-format=%i %l %n',
-      ]
-    if self.myDryRun: mycommandline.append ('-n')
-    if self.myCompress: mycommandline.append ('-z')
-    if self.myBandwitdhLimit: mycommandline.append ('--bwlimit=%i' % self.myBandwitdhLimit)
-    if self.myExtraArgs: 
-      eargs = shlex.split( self.myExtraArgs )
-      for arg in eargs: mycommandline.append ( arg )
+    # setup rsync command line
+    mycommandline = self.build_base_command_line()
     # setup source & destination
     # FIXME if not source.endswith(os.sep): source += os.sep
     if (self.myLogin != "" ): at = '@' 
@@ -68,10 +74,32 @@ class Rsync():
     if ( destination ): remote = remote + '/' + destination
     mycommandline.append ( source )
     mycommandline.append ( remote )
+    stdoutdata = self.launch_rsync ( mycommandline )
+    return ( stdoutdata )  
+
+  def pull ( self, remote, local ) :
+    """
+    pull 'remote' (directory or file) from module to 'local' (local directory or file).
+    Returns a string with all files transferred, line by line,
+    with format '%i %l %n' (see rsyncd.conf manpage, section 'log format').
+    Warning : %n may contains special characters depending on filenames.
+    """
+    # setup rsync command line
+    mycommandline = self.build_base_command_line()
+    # setup source & destination
+    if (self.myLogin != "" ): at = '@' 
+    else: at=''
+    source = 'rsync://' + self.myLogin + at + self.myServer + '/' + self.myModule + '/' + remote
+    mycommandline.append ( source )
+    mycommandline.append ( local )
+    stdoutdata = self.launch_rsync(mycommandline)
+    return ( stdoutdata )  
+  
+  def launch_rsync ( self, mycommandline ):
+    """launch rsync command"""
     # setup environnement
     myenv = os.environ
     myenv['RSYNC_PASSWORD'] = self.myPassword
- 
     # make a human readable string
     cmdstring = str()
     for token in mycommandline: cmdstring += token + ' '

@@ -1,0 +1,14 @@
+
+RESIF DATA TRANSFER
+
+an helper script to send data to RESIF datacentre and get 
+transaction status back from the 
+
+<<fixme / doc a completer avec des exemples>>
+
+online help :
+
+$ resif-data-transfer.py --help
+
+
+
