@@ -102,6 +102,11 @@ Link executable to user's standard path, eg:
 
 $ ln -s ~sysop/resif-data-transfer/ResifDataTransfer.py ~sysop/bin/
 
+You may prefer to link in another directory (eg: /usr/local/bin), or edit 
+your $PATH environnement variable. Then, you should be able to execute :
+
+$ ResifDataTransfer.py -h
+
 #
 # CONFIGURING
 #
@@ -112,8 +117,8 @@ By default, configuration file will be searched in base directory, eg:
 
 You may want to use an alternate configuration path (see -c option).
 
-A template configuration is provided in ResifDataTransfer.conf.dist :
-copy this file to create your new configuration file :
+A template configuration is provided in ResifDataTransfer.conf.dist,
+copy this file to create your own configuration file :
 
 $ cd ~sysop/resif-data-transfer/
 $ cp ResifDataTransfer.conf.dist ResifDataTransfer.conf
