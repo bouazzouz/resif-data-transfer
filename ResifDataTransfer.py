@@ -402,6 +402,11 @@ class ResifDataTransfer():
       if myDebug: raise
     except Exception, myException:
       returncode = 1
+      if myDebug: 
+        # print full stack trace
+        traceback.print_exc ( file = sys.stdout )
+        raise
+      # print abbreviated stack trace
       exc_type, exc_value, exc_traceback = sys.exc_info()
       alltraces = traceback.extract_tb ( exc_traceback )
       last = alltraces.pop()
@@ -409,7 +414,6 @@ class ResifDataTransfer():
       stderr.write( '  at line %s in %s\n' % ( last[1], last[2] )  )
       stderr.write( '  %s\n' % last[3] )
       stderr.write ( 'DETAILS\n  %s\n' % str(myException) )
-      if myDebug: raise
     # executed if no exception was raised
     else: pass
     # executed anytime

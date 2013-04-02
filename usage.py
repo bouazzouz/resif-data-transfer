@@ -33,6 +33,9 @@ USAGE = """{bold}{appname}{clear}\n\tRESIF data transfer - send data to RESIF da
 \tReturns 0 on success. 
 \tSome short error messages may be printed on stderr, see also configuration file for log files.
 
+{bold}EXAMPLE USAGES{clear}
+\tFIXME. 
+
 {bold}REQUIREMENTS & SUPPORT{clear}
 \tWorks with Python version between {vmin} and {vmax}. Needs 'rsync' and 'du' commands (or any compatible command). 
 \tThis is a test version : do not use for production.
