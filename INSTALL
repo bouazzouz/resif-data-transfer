@@ -1,4 +1,3 @@
-
 #
 # SYSTEM REQUIREMENTS
 #
@@ -6,23 +5,24 @@
 - this program is validated for
     Redhat Enteprise Linux, v6.0 and above, 32 or 64 bits
     Debian Linux, Lenny and above, 32 or 64 bits
-    however, this should work under any modern unix/linux 
+    however, this should work under any modern Unix/Linux system
 
 You also need:
 
-- a working 'rsync' command (version 3.0.6 and above). Check your rsync command
-by entering :
+- a working 'rsync' command (version 3.0.6 and above). Check your 
+rsync command by entering :
 
 $ rsync --version
 
-- a working GNU 'du' command. Most often, du is provided with GNU coreutils, 
-version 8.4 or above is advised. Check your du command by entering:
+- a working GNU 'du' command. Most often, du is provided with GNU 
+coreutils,  version 8.4 or above is advised. Check your du command 
+by entering:
 
 $ du --version
 
-- you need a working Python interpreter on your system (version 2.6.6 and
-above), with its full standard library. This program does not work with 
-Python 3.x. Check your python interprter by entering:
+- you need a working Python interpreter on your system (version 
+2.6.6 and above), with its full standard library. This program does 
+not work with  Python 3.x. Check your python interprter by entering:
 
 $ /usr/bin/env python --version
 
@@ -30,9 +30,8 @@ $ /usr/bin/env python --version
 # NETWORK REQUIREMENTS
 #
 
-- you need a working rsync connection to resif rsync server :
-
-You may check your IP connectivity is working using 'nc', eg:
+- you need a working rsync connection to resif rsync server. You may 
+check your IP connectivity is working using 'nc', eg:
 
 $ nc -z rsync.resif.fr 873
 
@@ -53,8 +52,8 @@ Escape character is '^]'.
 
 If your IP connection to the remote rsync server does not work :
 
-- first, check with RESIF datacenter operator that the remote server is
-up and running
+- first, check with RESIF datacenter operator the remote server 
+is up and running
  
 - then, check with your IT team that you are allowed to reach 
 port tcp/873 on rsync.resif.fr
@@ -73,11 +72,11 @@ For each each data type you will transfer, you must tell RESIF datacenter
 operator the address (FQDN) of the machine you will be performing the 
 transfer from. 
 
-DNS aliases are known to cause problem while doing IP validation. Take
+DNS aliases are known to cause problem while doing IP filtering. Take
 care to provide the real name of your machine, not an aliased name.
 
-There can be only one transferring machine per data type. You may also 
-use a single machine for all data types.
+There can be only one transferring machine per data type. You may use 
+a single machine for all data types.
 
 #
 # INSTALLING 
@@ -105,10 +104,12 @@ Link executable to user's standard path, eg:
 
 $ ln -s ~sysop/resif-data-transfer/ResifDataTransfer.py ~sysop/bin/
 
-You may prefer to link in another directory (eg: /usr/local/bin), or edit 
+You may prefer to link to another directory (eg: /usr/local/bin), or edit 
 your $PATH environnement variable. Then, you should be able to execute :
 
 $ ResifDataTransfer.py -h
+
+If not runinng, check that 'ResifDataTransfer.py' has execution bit enabled (chmod +x).
 
 #
 # CONFIGURING
@@ -124,7 +125,7 @@ A template configuration is provided in ResifDataTransfer.conf.dist,
 copy this file to create your own configuration file :
 
 $ cd ~sysop/resif-data-transfer/
-$ cp ResifDataTransfer.conf.dist ResifDataTransfer.conf
+$ cp ResifDataTransfer.conf.dist ResifDataTransfer.conf 
 
 Edit according to your requirements.
 
@@ -132,12 +133,18 @@ Edit according to your requirements.
 # UPGRADING
 #
 
-fixme
+See UPGRADE file.
 
 #
 # BACKUPS
 #
 
-fixme
+You should backup the following files:
 
+- configuration file
+- general log file 
+- logbook file
+
+You may want to rotate the general log file using a system tool 
+such as logrotate. You should not edit/alter loogbook contents by hand.
 
