@@ -74,8 +74,8 @@ class Rsync():
     if ( destination ): remote = remote + '/' + destination
     mycommandline.append ( source )
     mycommandline.append ( remote )
-    stdoutdata = self.launch_rsync ( mycommandline )
-    return ( stdoutdata )  
+    (stdoutdata, stderrdata) = self.launch_rsync ( mycommandline )
+    return ( stdoutdata,stderrdata )  
 
   def pull ( self, remote, local ) :
     """
@@ -92,8 +92,8 @@ class Rsync():
     source = 'rsync://' + self.myLogin + at + self.myServer + '/' + self.myModule + '/' + remote
     mycommandline.append ( source )
     mycommandline.append ( local )
-    stdoutdata = self.launch_rsync(mycommandline)
-    return ( stdoutdata )  
+    (stdoutdata, stderrdata) = self.launch_rsync(mycommandline)
+    return ( stdoutdata,stderrdata )  
   
   def launch_rsync ( self, mycommandline ):
     """launch rsync command"""
@@ -113,7 +113,7 @@ class Rsync():
       logging.debug ( 'rsync stderr : %s ' % stderrdata )
       raise Exception('Rsync returned an error. Transfer aborted.')
     # return file list
-    return ( stdoutdata )  
+    return ( stdoutdata, stderrdata )  
     
   def __init__ ( self, 
     server, 

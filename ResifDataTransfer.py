@@ -25,6 +25,9 @@ import miscTools
 from rsync import Rsync
 from transaction import Transaction
 
+# debug mode
+myDebug = False
+
 class ResifDataTransfer():
   """ 
   a helper script to transfer data (or logs) to (or from) RESIF datacentre 
@@ -32,7 +35,7 @@ class ResifDataTransfer():
     
   # script version (year, julian day)
   APPNAME = 'RESIF data transfer'
-  VERSION = (2013, 88)
+  VERSION = (2013, 93)
 
   # contact string
   CONTACT = 'FIXME'
@@ -50,7 +53,8 @@ class ResifDataTransfer():
   # Operation modes (bit encoded, so we can possibily combine multiple operations)
   OPERATIONS = dict(
     SEND_DATA = 0b01, 
-    RETRIEVE_LOGS = 0b10 )
+    RETRIEVE_LOGS = 0b10,
+    PRINT_LOGBOOK = 0b100)
   myOperation = None
 
   # target directory and data type (SEND_DATA)
@@ -84,7 +88,7 @@ class ResifDataTransfer():
     }
  
   # values for 'my node name'
-  __RESIF_NODES = ('GEOSCOPE', 'RAP', 'RLBP', 'SISMOB' )
+  __RESIF_NODES = ('IPGP', 'GEOSCOPE', 'RAP', 'RLBP', 'SISMOB' )
   
   # values for debug level
   # http://docs.python.org/2.6/library/logging.html#logging-levels
@@ -93,9 +97,8 @@ class ResifDataTransfer():
   # transaction file
   TRANSACTION_XML = 'transaction.xml'
    
-  # test modes & ignore limits
+  # test mode & ignore limits
   myTestOnly = False
-  myDebug = True
   ignoreLimits = False
   
   # rsync class instance
@@ -104,7 +107,7 @@ class ResifDataTransfer():
   # transfer logbook & date format for logs
   myLogbook = []
   __DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
-        
+          
   # help text
   from usage import USAGE
 
@@ -186,7 +189,7 @@ class ResifDataTransfer():
     # is data directory readable ?
     if ( self.myOperation == self.OPERATIONS['SEND_DATA'] ):
       if not os.access( self.myDirectoryName, os.R_OK | os.X_OK):
-        raise Exception ('directory %s is not readable.' % self.myDirectoryName)
+        raise Exception ('directory %s does not exist or is not readable.' % self.myDirectoryName)
     # open general log file (IOerror may be raised)
     if self.__CONFIG['logging']['log level'][1] not in self.__LOG_LEVELS: 
       raise Exception ( '\'log level\' parameter must be in %s'% (self.__LOG_LEVELS,) )
@@ -198,10 +201,12 @@ class ResifDataTransfer():
     # create empty logbook if not exist (IOerror may be raised)
     # or read existing logbook
     path = self.__CONFIG['logging']['logbook'][1]
-    if not os.path.exists ( path ): 
-      with open ( path, 'w' ) as f: json.dump ( [], f )
-    else: 
-      with open ( path, 'r' ) as f: self.myLogbook = json.load ( f ) 
+    try:
+        if not os.path.exists ( path ): 
+            with open ( path, 'w' ) as f: json.dump ( [], f )
+        else: 
+            with open ( path, 'r' ) as f: self.myLogbook = json.load ( f ) 
+    except: raise Exception('Problem while opening/creating logbook. (path=%s)' % path)
       
   def start ( self ):
     """ dispatches requested operation """
@@ -210,8 +215,9 @@ class ResifDataTransfer():
     if self.ignoreLimits: logging.warning('Ignoring limits set in configuration file.')
     if self.myOperation == self.OPERATIONS['SEND_DATA']: returncode = self.send_data()
     elif self.myOperation == self.OPERATIONS['RETRIEVE_LOGS']: returncode = self.retrieve_logs()
+    elif self.myOperation == self.OPERATIONS['PRINT_LOGBOOK']: returncode = self.print_logbook()    
     return returncode
-    
+        
   def logbook_compute_size ( self, offset = None):
     """
     compute total size of transfers done so far.
@@ -226,6 +232,15 @@ class ResifDataTransfer():
       logdate = datetime.strptime( log['date'], self.__DATE_FORMAT )
       if logdate >= mindate: size += log['size']
     return size
+  
+  def print_logbook ( self ):
+    if self.myLogbook:
+        for log in self.myLogbook:
+            sys.stdout.write ( '{0}\t{1}\t{2}\t{3}\t{4}\t{5:.3f}\n'.format(
+                log['transactionID'], log['date'], log['node'],
+                log['datatype'], log['directory'], 
+                log['size']) )
+    else: sys.stderr.write('Logbook is empty.\n')
     
   def send_data ( self ):
     """ runs the SEND_DATA operation """
@@ -258,7 +273,9 @@ class ResifDataTransfer():
     logging.info ( 'Transaction ID is %s' % self.myTransactionID )
     # push directory
     logging.info ('Calling rsync to transfer %s ', self.myDirectoryName)
-    itemslist = self.myRsync.push ( source = self.myDirectoryName, destination = self.myTransactionID )
+    (itemslist,stderrdata) = self.myRsync.push ( source = self.myDirectoryName, destination = self.myTransactionID )
+    logging.debug('rsync stderr follows:')
+    logging.debug(stderrdata)
     # build and push xml
     logging.info ('Building XML object from rsync output.')
     tree = Transaction()
@@ -273,11 +290,13 @@ class ResifDataTransfer():
     # build a list of sent files, insert it as JSON into the XML
     filelist = []
     for line in itemslist.splitlines(): 
-      items,size,path = line.split(None,2)
-      # 'items' should contain the ouput of rsync --itemize-changes :
-      # we only keep files and ignore the rest (eg. directories, symlinks, ..)
-      if items[1]=='f': filelist.append(path)
-      elif items[1]!='d': logging.warning ( 'not included in XML: %s' % line )
+        try:
+            items,size,path = line.split(None,2)
+            # 'items' should contain the ouput of rsync --itemize-changes :
+            # we only keep files and ignore the rest (eg. directories, symlinks, ..)
+            if items[1]=='f': filelist.append(path)
+            elif items[1]!='d': logging.warning ( 'filesystem object not included in XML (or parsing error): %s' % line )
+        except ValueError: logging.error ('Could not parse rsync output : "%s"' % line)
     tree.set_sent_files( json.dumps(filelist,indent=None) )
     # write temporary xml file, make sure the file is sync'ed on disk
     logging.info ('Writing XML object to temporary file')
@@ -289,7 +308,7 @@ class ResifDataTransfer():
     # send XML file,
     if not self.myTestOnly:
         logging.info ('Calling rsync to transfer XML file %s' % temppath)
-        self.myRsync.push ( source = temppath, destination = os.path.join(self.myTransactionID, self.TRANSACTION_XML) )
+        (stdoutdata,stderrdata) = self.myRsync.push ( source = temppath, destination = os.path.join(self.myTransactionID, self.TRANSACTION_XML) )
     # update logbook
     self.myLogbook.append ( { 'date': now,
         'node': self.__CONFIG['my resif node']['my node name'][1],
@@ -359,7 +378,7 @@ class ResifDataTransfer():
         sys.exit(2)
 
       # extract command line arguments
-      options, args = getopt.gnu_getopt(sys.argv[1:], 'htc:is:d:r:', ['help','test','config=','ignore-limits','send=','data-type=','retrieve-logs='])
+      options, args = getopt.gnu_getopt(sys.argv[1:], 'htc:is:d:r:lbv', ['help','test','config=','ignore-limits','send=','data-type=','retrieve-logs=','logbook','debug', 'version'])
       for opt,arg in options:
         if opt in ('-h', '--help'):
           stderr.write ( usage )
@@ -378,7 +397,13 @@ class ResifDataTransfer():
         elif opt in ('-r', '--retrieve-logs'):
           operationCode += ResifDataTransfer.OPERATIONS['RETRIEVE_LOGS']
           transaction = arg
-
+        elif opt in ('-l', '--logbook'):
+          operationCode += ResifDataTransfer.OPERATIONS['PRINT_LOGBOOK']
+        elif opt in ('-v', '--version'):
+            sys.stderr.write('%d.%d\n' % (ResifDataTransfer.VERSION))
+            sys.exit(0)    
+        elif opt in ('-b', '--debug'): myDebug = True
+          
       # initialize class
       myTransfer = ResifDataTransfer ( 
         test = testOnly, 
@@ -412,7 +437,6 @@ class ResifDataTransfer():
       last = alltraces.pop()
       stderr.write( 'ERROR\n  in file %s\n' % last[0] )
       stderr.write( '  at line %s in %s\n' % ( last[1], last[2] )  )
-      stderr.write( '  %s\n' % last[3] )
       stderr.write ( 'DETAILS\n  %s\n' % str(myException) )
     # executed if no exception was raised
     else: pass

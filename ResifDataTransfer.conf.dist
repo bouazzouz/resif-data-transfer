@@ -17,15 +17,18 @@
 
 [my resif node] 
 
-; Set your node name as specified within resif
+; Set your node name as specified within resif.
+; this field is mandatory
 my node name = 
 
-; Set your node password as specified within resif
+; Set your node password as specified within resif.
+; this field is mandatory
 my node password = 
 
 [system]
 
-; a directory where the script may write temporary files
+; a directory where the script may write temporary files.
+; this field is mandatory
 working directory = 
 
 ; Set to 'yes' if you want the script to automatically 
@@ -78,8 +81,11 @@ rsync extra args =
 [logging]
 
 ; General logs go into this file (must be writable).
-; If file does not exist, it will be created.
-; It is advised to rotate this file periodically (eg. use 'logrorate')
+; If file does not exist, it will be created. It is advised to rotate this file 
+; periodically (eg. use 'logrorate'). You may also set any system device instead 
+; of a regular file, eg: /dev/stderr if you want the logs directed to standard error.
+; If no value is set at all, behaviour is unpredictable and depends on your system.
+; This field is mandatory.
 log file = 
 
 ; log level
@@ -89,9 +95,10 @@ log level = DEBUG
 
 ; Transfer logbook is written into this file (must be writable).
 ; This file contains a history of your previous transfers.
-; This file is JSON formatted, and may be read with provived tool.
+; This file is JSON formatted, and may bed read with provived tool.
 ; If file does not exist, it will be created.
 ; You may want to include this file in your backups.
+; This field is mandatory.
 logbook = 
 
 [limits]

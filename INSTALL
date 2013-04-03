@@ -71,7 +71,10 @@ provide you with :
 
 For each each data type you will transfer, you must tell RESIF datacenter 
 operator the address (FQDN) of the machine you will be performing the 
-transfer from. DNS aliases name are allowed. 
+transfer from. 
+
+DNS aliases are known to cause problem while doing IP validation. Take
+care to provide the real name of your machine, not an aliased name.
 
 There can be only one transferring machine per data type. You may also 
 use a single machine for all data types.
