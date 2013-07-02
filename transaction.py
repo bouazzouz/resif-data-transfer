@@ -28,8 +28,8 @@ class Transaction():
     node = self.root.find('last_updated')
     node.text = date
   
-  def set_size( self, size):
-    node = self.root.find('sent_files/size')
+  def set_client_size( self, size):
+    node = self.root.find('sent_files/size_on_client')
     node.text = size
 
   def set_comment( self, comment):
@@ -61,7 +61,7 @@ class Transaction():
     SubElement(self.root,"last_updated")
     SubElement(self.root,"comment")
     sent_files = SubElement(self.root,"sent_files")
-    SubElement(sent_files,"size")
+    SubElement(sent_files,"size_on_client")
     SubElement(sent_files,"filelist")
       
   if __name__ == "__main__":

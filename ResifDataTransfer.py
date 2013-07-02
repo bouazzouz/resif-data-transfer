@@ -35,7 +35,7 @@ class ResifDataTransfer():
     
   # script version (year, julian day)
   APPNAME = 'RESIF data transfer'
-  VERSION = (2013, 93)
+  VERSION = (2013, 175)
 
   # contact string
   CONTACT = 'FIXME'
@@ -285,19 +285,19 @@ class ResifDataTransfer():
     tree.set_data_type(self.myDataType)
     now = time.strftime(self.__DATE_FORMAT,time.gmtime())
     tree.set_last_updated(now)
-    tree.set_size( str(sizeGb) )
+    tree.set_client_size( str(sizeGb) )
     tree.set_comment('data sent to datacentre and waiting for processing')
     # build a list of sent files, insert it as JSON into the XML
-    filelist = []
-    for line in itemslist.splitlines(): 
-        try:
-            items,size,path = line.split(None,2)
+    #filelist = []
+    #for line in itemslist.splitlines(): 
+    #    try:
+    #        items,size,path = line.split(None,2)
             # 'items' should contain the ouput of rsync --itemize-changes :
             # we only keep files and ignore the rest (eg. directories, symlinks, ..)
-            if items[1]=='f': filelist.append(path)
-            elif items[1]!='d': logging.warning ( 'filesystem object not included in XML (or parsing error): %s' % line )
-        except ValueError: logging.error ('Could not parse rsync output : "%s"' % line)
-    tree.set_sent_files( json.dumps(filelist,indent=None) )
+    #        if items[1]=='f': filelist.append(path)
+    #        elif items[1]!='d': logging.warning ( 'filesystem object not included in XML (or parsing error): %s' % line )
+    #    except ValueError: logging.error ('Could not parse rsync output : "%s"' % line)
+    #tree.set_sent_files( json.dumps(filelist,indent=None) )
     # write temporary xml file, make sure the file is sync'ed on disk
     logging.info ('Writing XML object to temporary file')
     temp = tempfile.NamedTemporaryFile(dir=self.__CONFIG['system']['working directory'][1])
