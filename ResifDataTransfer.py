@@ -295,7 +295,7 @@ class ResifDataTransfer():
         (stdoutdata,stderrdata) = self.myRsync.push ( source = self.myDirectoryName + ' ' + xmlfile, destination = self.myTransactionID )
         logging.debug('rsync stderr follows:')
         logging.debug(stderrdata)
-    os.removedirs ( temppath )
+    shutil.rmtree ( temppath )
     # update logbook
     self.myLogbook.append ( { 'date': now,
         'node': self.__CONFIG['my resif node']['my node name'][1],

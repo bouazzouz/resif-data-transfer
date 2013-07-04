@@ -56,9 +56,10 @@ class Rsync():
       for arg in eargs: mycommandline.append ( arg )
     return mycommandline
     
-  def push ( self, source, destination = None ) :
+  def push ( self, sources, destination = None ) :
     """
-    push 'source' (directory, file) to remote module.
+    push 'sources' (directory(s), file(s)) to remote module.
+    (multiples sources must separated by spaces)
     'destination' is appended to module.
     Returns a string with all files transferred, line by line,
     with format '%i %l %n' (see rsyncd.conf manpage, section 'log format').
