@@ -2,6 +2,7 @@
 import os
 import socket
 import shlex
+import shutil
 import subprocess
 import logging
 
