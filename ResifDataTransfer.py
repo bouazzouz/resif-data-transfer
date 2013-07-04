@@ -10,6 +10,7 @@ import logging
 import os
 import random
 import shlex
+import shutil
 import stat
 import string
 import subprocess
