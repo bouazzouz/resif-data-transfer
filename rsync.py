@@ -56,9 +56,9 @@ class Rsync():
       for arg in eargs: mycommandline.append ( arg )
     return mycommandline
     
-  def push ( self, sources, destination = None ) :
+  def push ( self, source, destination = None ) :
     """
-    push 'sources' (directory(s), file(s)) to remote module.
+    push 'source' (directory(s), file(s)) to remote module.
     (multiples sources must separated by spaces)
     'destination' is appended to module.
     Returns a string with all files transferred, line by line,
