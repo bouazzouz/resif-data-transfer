@@ -271,13 +271,8 @@ class ResifDataTransfer():
         ''.join( [random.choice(string.ascii_uppercase) for x in range(3)]), 
         ''.join( [random.choice(string.digits) for x in range(3)]) )    
     logging.info ( 'Transaction ID is %s' % self.myTransactionID )
-    # push directory
-    logging.info ('Calling rsync to transfer %s ', self.myDirectoryName)
-    (itemslist,stderrdata) = self.myRsync.push ( source = self.myDirectoryName, destination = self.myTransactionID )
-    logging.debug('rsync stderr follows:')
-    logging.debug(stderrdata)
-    # build and push xml
-    logging.info ('Building XML object from rsync output.')
+    # build xml
+    logging.info ('Building XML object')
     tree = Transaction()
     tree.set_transaction_id(self.myTransactionID)
     tree.set_status('1')
@@ -287,28 +282,20 @@ class ResifDataTransfer():
     tree.set_last_updated(now)
     tree.set_client_size( str(sizeGb) )
     tree.set_comment('data sent to datacentre and waiting for processing')
-    # build a list of sent files, insert it as JSON into the XML
-    #filelist = []
-    #for line in itemslist.splitlines(): 
-    #    try:
-    #        items,size,path = line.split(None,2)
-            # 'items' should contain the ouput of rsync --itemize-changes :
-            # we only keep files and ignore the rest (eg. directories, symlinks, ..)
-    #        if items[1]=='f': filelist.append(path)
-    #        elif items[1]!='d': logging.warning ( 'filesystem object not included in XML (or parsing error): %s' % line )
-    #    except ValueError: logging.error ('Could not parse rsync output : "%s"' % line)
-    #tree.set_sent_files( json.dumps(filelist,indent=None) )
-    # write temporary xml file, make sure the file is sync'ed on disk
-    logging.info ('Writing XML object to temporary file')
-    temp = tempfile.NamedTemporaryFile(dir=self.__CONFIG['system']['working directory'][1])
-    temppath = os.path.join ( self.__CONFIG['system']['working directory'][1], temp.name )
-    tree.write(temp)
-    temp.flush()
-    os.fsync(temp.fileno())
-    # send XML file,
+    temppath = os.path.join ( self.__CONFIG['system']['working directory'][1], self.myTransactionID )
+    logging.info ('Writing XML to temporary file in %s' % temppath)
+    os.mkdir ( temppath )
+    xmlfile = os.path.join ( temppath, self.TRANSACTION_XML )
+    f = open ( xmlfile, 'w' )
+    tree.write(f)
+    f.close()
+    # send data + XML file,
     if not self.myTestOnly:
-        logging.info ('Calling rsync to transfer XML file %s' % temppath)
-        (stdoutdata,stderrdata) = self.myRsync.push ( source = temppath, destination = os.path.join(self.myTransactionID, self.TRANSACTION_XML) )
+        logging.info ('Calling rsync to transfer %s and %s' % ( self.myDirectoryName, xmlfile))
+        (stdoutdata,stderrdata) = self.myRsync.push ( source = self.myDirectoryName + ' ' + xmlfile, destination = self.myTransactionID )
+        logging.debug('rsync stderr follows:')
+        logging.debug(stderrdata)
+    os.removedirs ( temppath )
     # update logbook
     self.myLogbook.append ( { 'date': now,
         'node': self.__CONFIG['my resif node']['my node name'][1],
