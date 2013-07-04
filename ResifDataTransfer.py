@@ -18,8 +18,6 @@ import sys
 from sys import stderr
 import time
 import traceback
-import tempfile
-import xml.etree.ElementTree as ET
 
 # custom modules
 import miscTools
@@ -36,7 +34,7 @@ class ResifDataTransfer():
     
   # script version (year, julian day)
   APPNAME = 'RESIF data transfer'
-  VERSION = (2013, 175)
+  VERSION = (2013, 185)
 
   # contact string
   CONTACT = 'FIXME'
@@ -251,10 +249,8 @@ class ResifDataTransfer():
       self.__CONFIG['system']['disk usage command arguments'][1], 
       self.myDirectoryName )
     args = shlex.split ( mycommandline )
-    logging.info('Calculating size of %s ' % self.myDirectoryName) 
-    logging.debug('Calling external process : %s ' % mycommandline ) 
+    logging.info('Calculating size of %s (%s)' % (self.myDirectoryName, mycommandline) ) 
     proc = subprocess.Popen ( args, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-    logging.debug('Reading stdout from external process') 
     (stdoutdata, stderrdata) = proc.communicate()
     if proc.returncode != 0 :
       raise Exception('External process returned non 0 value : %s' % mycommandline)
@@ -272,7 +268,7 @@ class ResifDataTransfer():
         ''.join( [random.choice(string.ascii_uppercase) for x in range(3)]), 
         ''.join( [random.choice(string.digits) for x in range(3)]) )    
     logging.info ( 'Transaction ID is %s' % self.myTransactionID )
-    # build xml
+    # build & write xml
     logging.info ('Building XML object')
     tree = Transaction()
     tree.set_transaction_id(self.myTransactionID)
@@ -294,8 +290,7 @@ class ResifDataTransfer():
     if not self.myTestOnly:
         logging.info ('Calling rsync to transfer %s and %s' % ( self.myDirectoryName, xmlfile))
         (stdoutdata,stderrdata) = self.myRsync.push ( source = self.myDirectoryName + ' ' + xmlfile, destination = self.myTransactionID )
-        logging.debug('rsync stderr follows:')
-        logging.debug(stderrdata)
+        logging.debug('rsync stderr follows: %s' % stderrdata)
     shutil.rmtree ( temppath )
     # update logbook
     self.myLogbook.append ( { 'date': now,
