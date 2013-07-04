@@ -67,12 +67,12 @@ class Rsync():
     # setup rsync command line
     mycommandline = self.build_base_command_line()
     # setup source & destination
-    # FIXME if not source.endswith(os.sep): source += os.sep
     if (self.myLogin != "" ): at = '@' 
     else: at=''
     remote = 'rsync://' + self.myLogin + at + self.myServer + '/' + self.myModule
     if ( destination ): remote = remote + '/' + destination
-    mycommandline.append ( source )
+    sources = shlex.split ( source ) 
+    for s in sources: mycommandline.append ( s )
     mycommandline.append ( remote )
     (stdoutdata, stderrdata) = self.launch_rsync ( mycommandline )
     return ( stdoutdata,stderrdata )  
