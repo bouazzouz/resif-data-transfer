@@ -24,9 +24,6 @@ import miscTools
 from rsync import Rsync
 from transaction import Transaction
 
-# debug mode
-myDebug = False
-
 class ResifDataTransfer():
   """ 
   a helper script to transfer data (or logs) to (or from) RESIF datacentre 
@@ -268,6 +265,7 @@ class ResifDataTransfer():
         ''.join( [random.choice(string.ascii_uppercase) for x in range(3)]), 
         ''.join( [random.choice(string.digits) for x in range(3)]) )    
     logging.info ( 'Transaction ID is %s' % self.myTransactionID )
+    sys.stdout.write ( self.myTransactionID+'\n' )
     # build & write xml
     logging.info ('Building XML object')
     tree = Transaction()
@@ -286,7 +284,7 @@ class ResifDataTransfer():
     f = open ( xmlfile, 'w' )
     tree.write(f)
     f.close()
-    # send data + XML file,
+    # send data + XML file
     if not self.myTestOnly:
         logging.info ('Calling rsync to transfer %s and %s' % ( self.myDirectoryName, xmlfile))
         (stdoutdata,stderrdata) = self.myRsync.push ( source = self.myDirectoryName + ' ' + xmlfile, destination = self.myTransactionID )
@@ -302,8 +300,7 @@ class ResifDataTransfer():
     if not self.myTestOnly:
       logging.info ('Updating transfer loogbook')
       with open ( self.__CONFIG['logging']['logbook'][1], 'w' ) as f: json.dump(self.myLogbook,f,indent=2) 
-    # on success, prints transaction ID on stdout and returns 0
-    sys.stderr.write ( self.myTransactionID+'\n' )
+    # on success, returns 0
     return 0
 
   def retrieve_logs ( self ):
@@ -336,7 +333,6 @@ class ResifDataTransfer():
       returncode = 1
       
       # build usage text 
-      # see http://ascii-table.com/ansi-escape-sequences.php
       usage = ResifDataTransfer.USAGE.format ( prog = sys.argv[0],
         appname = ResifDataTransfer.APPNAME,
         version = str ( ResifDataTransfer.VERSION[0] ) + '.' + str ( ResifDataTransfer.VERSION[1] ),
@@ -361,7 +357,7 @@ class ResifDataTransfer():
         sys.exit(2)
 
       # extract command line arguments
-      options, args = getopt.gnu_getopt(sys.argv[1:], 'htc:is:d:r:lbv', ['help','test','config=','ignore-limits','send=','data-type=','retrieve-logs=','logbook','debug', 'version'])
+      options, args = getopt.gnu_getopt(sys.argv[1:], 'htc:is:d:r:lv', ['help','test','config=','ignore-limits','send=','data-type=','retrieve-logs=','logbook', 'version'])
       for opt,arg in options:
         if opt in ('-h', '--help'):
           stderr.write ( usage )
@@ -385,7 +381,6 @@ class ResifDataTransfer():
         elif opt in ('-v', '--version'):
             sys.stderr.write('%d.%d\n' % (ResifDataTransfer.VERSION))
             sys.exit(0)    
-        elif opt in ('-b', '--debug'): myDebug = True
           
       # initialize class
       myTransfer = ResifDataTransfer ( 
@@ -405,24 +400,17 @@ class ResifDataTransfer():
     except getopt.GetoptError, err:
       stderr.write ( str(err) + '. Use -h to display usage.\n' )
       returncode = 2
+    # keyboard interrupt
     except KeyboardInterrupt:
+      returncode = 1
       logging.error ('keyboard interrupt')
-      if myDebug: raise
+      raise
+    # any other exception
     except Exception, myException:
       returncode = 1
-      if myDebug: 
-        # print full stack trace
-        traceback.print_exc ( file = sys.stdout )
-        raise
-      # print abbreviated stack trace
-      exc_type, exc_value, exc_traceback = sys.exc_info()
-      alltraces = traceback.extract_tb ( exc_traceback )
-      last = alltraces.pop()
-      stderr.write( 'ERROR\n  in file %s\n' % last[0] )
-      stderr.write( '  at line %s in %s\n' % ( last[1], last[2] )  )
-      stderr.write ( 'DETAILS\n  %s\n' % str(myException) )
+      traceback.print_exc ( file = sys.stderr )
     # executed if no exception was raised
     else: pass
     # executed anytime
     finally: sys.exit ( returncode )
-  
+

@@ -11,7 +11,6 @@ USAGE = """{bold}{appname}{clear}\n\tSends data to RESIF datacentre, gets transa
 \t{bold}-r, --retrieve-logs{clear}\tretrieve transaction logs (see TRANSACTION STATUS)
 \t{bold}-i, --ignore-limits{clear}\tignore limits (see [limits] in configuration file)
 \t{bold}-l, --logbook{clear}\t\tdump logbook to stdout (see LOGBOOK)
-\t{bold}-b, --debug{clear}\t\tturn debug mode on (for testing only)
 \t{bold}-v, --version{clear}\t\tprint version and exit
 
 \tNote : {bold}-s{clear} implies {bold}-d{clear}, {bold}-s{clear} {bold}-r{clear} and {bold}-l{clear} are mutually exclusive.

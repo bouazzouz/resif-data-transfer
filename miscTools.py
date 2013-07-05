@@ -116,8 +116,7 @@ def split_key_value ( mystring, key, sep='=' ):
     split a "key=value" string, returns: 
     (key,value) if ok
     (key,None) if key exist but no value
-    (None,None) if key does not exist 
-    (None,None) if problem while splitting
+    (None,None) if key does not exist or problem while splitting 
     """
     try: 
         array = mystring.split (sep , 1 )
