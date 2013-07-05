@@ -109,7 +109,7 @@ class Rsync():
     proc = subprocess.Popen ( mycommandline, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
     logging.info('Rsync running...') 
     (stdoutdata, stderrdata) = proc.communicate()
-    logging.info ( 'Rsync return code is %i' % proc.returncode )
+    logging.info ( 'Rsync return code is %i (0 means success)' % proc.returncode )
     if proc.returncode != 0 :
       logging.debug ( 'rsync stderr : %s ' % stderrdata )
       raise Exception('Rsync returned an error. Transfer aborted.')
