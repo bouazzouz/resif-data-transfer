@@ -277,10 +277,8 @@ class ResifDataTransfer():
     tree.set_last_updated(now)
     tree.set_client_size( str(sizeGb) )
     tree.set_comment('data sent to datacentre and waiting for processing')
-    temppath = os.path.join ( self.__CONFIG['system']['working directory'][1], self.myTransactionID )
-    logging.info ('Writing XML to temporary file in %s' % temppath)
-    os.mkdir ( temppath )
-    xmlfile = os.path.join ( temppath, self.TRANSACTION_XML )
+    xmlfile = os.path.join ( self.__CONFIG['system']['working directory'][1], self.TRANSACTION_XML + self.myTransactionID )
+    logging.info ('Writing XML in %s' % xmlfile)
     f = open ( xmlfile, 'w' )
     tree.write(f)
     f.close()
@@ -289,7 +287,6 @@ class ResifDataTransfer():
         logging.info ('Calling rsync to transfer %s and %s' % ( self.myDirectoryName, xmlfile))
         (stdoutdata,stderrdata) = self.myRsync.push ( source = self.myDirectoryName + ' ' + xmlfile, destination = self.myTransactionID )
         logging.debug('rsync stderr follows: %s' % stderrdata)
-    shutil.rmtree ( temppath )
     # update logbook
     self.myLogbook.append ( { 'date': now,
         'node': self.__CONFIG['my resif node']['my node name'][1],
