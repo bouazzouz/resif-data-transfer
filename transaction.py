@@ -3,6 +3,8 @@ import xml.etree.ElementTree
 from xml.etree.ElementTree import ElementTree, Element, SubElement
 from xml.dom import minidom
 
+import os
+
 class Transaction():
   """
   Create, parse, modify an XML file associated to a transaction.
@@ -42,16 +44,21 @@ class Transaction():
     node.text = files
     
   def write(self,filename):
-     # FIXME implement atomic write
-     f = open ( filename, 'w' )
+     """write XML tree to filename, atomically. This guarantees that any 
+     client downloading the XML file will get a sane content.
+     """
+     f = open ( filename + '.tmp', 'w' )
      ElementTree(self.root).write(f,encoding='UTF-8')
      f.close()
+     os.rename ( filename + '.tmp', filename )
         
   def __init__(self, filename=None):
     # build blank XML tree
     if not filename:
         self.root = Element("transaction")
         SubElement(self.root, "id")
+        SubElement(self.root, "resif_node")
+        SubElement(self.root, "resif_node")
         SubElement(self.root, "resif_node")
         SubElement(self.root,"datatype")
         SubElement(self.root,"status")
