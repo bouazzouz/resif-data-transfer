@@ -279,9 +279,7 @@ class ResifDataTransfer():
     tree.set_comment('data sent to datacentre and waiting for processing')
     xmlfile = os.path.join ( self.__CONFIG['system']['working directory'][1], self.TRANSACTION_XML + self.myTransactionID )
     logging.info ('Writing XML in %s' % xmlfile)
-    f = open ( xmlfile, 'w' )
-    tree.write(f)
-    f.close()
+    tree.write(xmlfile)
     # send data + XML file
     if not self.myTestOnly:
         logging.info ('Calling rsync to transfer %s and %s' % ( self.myDirectoryName, xmlfile))

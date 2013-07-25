@@ -1,4 +1,5 @@
 
+import xml.etree.ElementTree
 from xml.etree.ElementTree import ElementTree, Element, SubElement
 from xml.dom import minidom
 
@@ -32,40 +33,41 @@ class Transaction():
     node = self.root.find('client_size')
     node.text = size
 
-  #def set_client_size( self, size):
-  #  node = self.root.find('sent_files/size_on_client')
-  #  node.text = size
-
   def set_comment( self, comment):
     node = self.root.find('comment')
     node.text = comment
 
-  def set_sent_files( self, files):
-    node = self.root.find('sent_files/filelist')
+  def set_filelist( self, files):
+    node = self.root.find('filelist')
     node.text = files
     
-  def pretty_dump(self):
-    """
-    returns a pretty-printed XML string
-    http://blog.doughellmann.com/2010/03/pymotw-creating-xml-documents-with.html
-    """
-    rough = ElementTree.tostring(self.root, 'utf-8')
-    reparsed = minidom.parseString(rough)
-    return reparsed.toprettyxml(indent="\t")
-
   def write(self,filename):
-    ElementTree(self.root).write(filename,'UTF-8')
+     # FIXME implement atomic write
+     f = open ( filename, 'w' )
+     ElementTree(self.root).write(f,'UTF-8',xml_declaration=True)
+     f.close()
+        
+  def __init__(self, filename=None):
+    # build blank XML tree
+    if not filename:
+        self.root = Element("transaction")
+        SubElement(self.root, "id")
+        SubElement(self.root, "resif_node")
+        SubElement(self.root,"datatype")
+        SubElement(self.root,"status")
+        SubElement(self.root,"last_updated")
+        SubElement(self.root,"comment")
+        SubElement(self.root,"client_size")
+        SubElement(self.root,"filelist")
+    # load existing XML from file
+    else:
+        tree = xml.etree.ElementTree.parse(filename)
+        self.root = tree.getroot()
     
-  def __init__(self):
-    self.root = Element("transaction")
-    SubElement(self.root, "id")
-    SubElement(self.root, "resif_node")
-    SubElement(self.root,"datatype")
-    SubElement(self.root,"status")
-    SubElement(self.root,"last_updated")
-    SubElement(self.root,"comment")
-    SubElement(self.root,"client_size")
-    
+    #def set_client_size( self, size):
+    #  node = self.root.find('sent_files/size_on_client')
+    #  node.text = size
+        
     # sent_files = SubElement(self.root,"sent_files")
     # SubElement(sent_files,"size_on_client")
     # SubElement(sent_files,"filelist")
