@@ -44,7 +44,7 @@ class Transaction():
   def write(self,filename):
      # FIXME implement atomic write
      f = open ( filename, 'w' )
-     ElementTree(self.root).write(f,'UTF-8',xml_declaration=True)
+     ElementTree(self.root).write(f,encoding='UTF-8',xml_declaration=True)
      f.close()
         
   def __init__(self, filename=None):
