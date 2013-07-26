@@ -260,16 +260,12 @@ class ResifDataTransfer():
       logging.info('Size of data transferred since one week: %.2fGb' % totalsize )
       if (totalsize + sizeGb > self.__CONFIG['limits']['weekly max size'][1]):
 	    raise Exception('Transfer size exceeds limit (see log file for details)')
-    # compute a transaction ID
-    self.myTransactionID = '%s%s' % ( 
-        ''.join( [random.choice(string.ascii_uppercase) for x in range(3)]), 
-        ''.join( [random.choice(string.digits) for x in range(3)]) )    
-    logging.info ( 'Transaction ID is %s' % self.myTransactionID )
-    sys.stdout.write ( self.myTransactionID+'\n' )
-    # build & write xml
+    # build XML object, outputs new transaction ID, write XML file
     logging.info ('Building XML object')
     tree = Transaction()
-    tree.set_transaction_id(self.myTransactionID)
+    self.myTransactionID = tree.get_transaction_id()
+    logging.info ( 'Transaction ID is %s' % self.myTransactionID )
+    sys.stdout.write ( self.myTransactionID+'\n' )
     tree.set_status('0')
     tree.set_resif_node(self.__CONFIG['my resif node']['my node name'][1])
     tree.set_data_type(self.myDataType)
