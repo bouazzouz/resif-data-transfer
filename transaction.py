@@ -5,6 +5,7 @@ from xml.dom import minidom
 
 import os
 import random
+import string
 
 class Transaction():
   """

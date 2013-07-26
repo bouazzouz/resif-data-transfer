@@ -399,7 +399,7 @@ class ResifDataTransfer():
     # any other exception
     except Exception, myException:
       returncode = 1
-      traceback.print_exc ( 2, file = sys.stderr )
+      traceback.print_exc ( None, file = sys.stderr )
     # executed if no exception was raised
     else: pass
     # executed anytime
