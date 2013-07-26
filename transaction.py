@@ -6,6 +6,7 @@ from xml.dom import minidom
 import os
 import random
 import string
+import time
 
 class Transaction():
   """
@@ -34,9 +35,10 @@ class Transaction():
     node = self.root.find('datatype')
     return ( node.text )
     
-  def set_last_updated( self, date):
+  def set_last_updated( self ):
+    now = time.strftime(self.__DATE_FORMAT,time.gmtime())
     node = self.root.find('last_updated')
-    node.text = date
+    node.text = now
   
   def set_client_size( self, size):
     node = self.root.find('client_size')
@@ -50,17 +52,22 @@ class Transaction():
     node = self.root.find('filelist')
     node.text = files
 
-  def set_process_result ( self, comment, files_with_error=None ):
+  def add_process_result ( self, processname, comment, returncode, files_with_errors=None ):
     myprocess = SubElement(self.root,"process_result")
+    myprocessname = SubElement(myprocess,"process_name")
+    myprocessname.text = processname
     mycomment = SubElement(myprocess,"comment")
-    myerror = SubElement(myprocess,"files_with_error")
     mycomment.text = comment
-    myerror.text = files_with_error
+    myreturncode = SubElement(myprocess,"returncode")
+    myreturncode.text = returncode
+    myerror = SubElement(myprocess,"files_with_errors")
+    myerror.text = files_with_errors
       
-  def write(self,filename):
+  def write(self,filename, last_updated = True):
      """write XML tree to filename, atomically. This guarantees that any 
      client downloading the XML file will get a sane content.
      """
+     if last_updated: self.set_last_updated()
      f = open ( filename + '.tmp', 'w' )
      ElementTree(self.root).write(f,encoding='UTF-8')
      f.close()

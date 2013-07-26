@@ -269,8 +269,6 @@ class ResifDataTransfer():
     tree.set_status('0')
     tree.set_resif_node(self.__CONFIG['my resif node']['my node name'][1])
     tree.set_data_type(self.myDataType)
-    now = time.strftime(self.__DATE_FORMAT,time.gmtime())
-    tree.set_last_updated(now)
     tree.set_client_size( str(sizeGb) )
     tree.set_comment('data sent to datacentre by client-side application')
     xmlfile = os.path.join ( self.__CONFIG['system']['working directory'][1], self.TRANSACTION_XML + self.myTransactionID )
