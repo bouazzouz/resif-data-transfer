@@ -306,7 +306,7 @@ class ResifDataTransfer():
     tempxml= os.path.join ( self.__CONFIG['system']['working directory'][1], 'tmpxml' + self.myTransactionID )
     logging.info ("Getting XML file from rsync server for transaction %s" % self.myTransactionID)
     try:
-        myRsync.pull ( remote = os.path.join ( self.myTransactionID, self.TRANSACTION_XML ), local = tempxml )
+        myRsync.pull ( remote = 'transaction-%s.xml' % self.myTransactionID, local = tempxml )
     except:
         msg='Could not retrieve XML file for this transaction.'
         logging.error ( msg )
