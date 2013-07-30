@@ -277,7 +277,7 @@ class ResifDataTransfer():
     logging.debug('rsync stderr follows: %s' % stderrdata)
     os.remove(xmlfile)
     # update logbook
-    self.myLogbook.append ( { 'date': now,
+    self.myLogbook.append ( { 'date': time.strftime ( self.__DATE_FORMAT,time.gmtime() ),
         'node': self.__CONFIG['my resif node']['my node name'][1],
         'directory':self.myDirectoryName, 
         'transactionID':self.myTransactionID, 
@@ -394,6 +394,7 @@ class ResifDataTransfer():
     except Exception, myException:
       returncode = 1
       traceback.print_exc ( None, file = sys.stderr )
+      logging.error ( str(myException) )
     # executed anytime
     finally: sys.exit ( returncode )
 
