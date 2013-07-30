@@ -273,7 +273,7 @@ class ResifDataTransfer():
       )
     #if not self.myTestOnly:
     logging.info ('Calling rsync to transfer %s and %s' % ( self.myDirectoryName, xmlfile))
-    (stdoutdata,stderrdata) = self.myRsync.push ( source = self.myDirectoryName + ' ' + xmlfile, destination = self.myTransactionID )
+    (stdoutdata,stderrdata) = myRsync.push ( source = self.myDirectoryName + ' ' + xmlfile, destination = self.myTransactionID )
     logging.debug('rsync stderr follows: %s' % stderrdata)
     os.remove(xmlfile)
     # update logbook
