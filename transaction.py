@@ -14,6 +14,7 @@ class Transaction():
   """
   root = None
   transactionID = None
+  __DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
   
   def get_transaction_id( self ):
     node = self.root.find('id')

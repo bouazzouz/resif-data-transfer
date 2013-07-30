@@ -31,7 +31,7 @@ class ResifDataTransfer():
     
   # script version (year, julian day)
   APPNAME = 'RESIF data transfer'
-  VERSION = (2013, 185)
+  VERSION = (2013, 211)
 
   # contact string
   CONTACT = 'FIXME'
@@ -96,10 +96,7 @@ class ResifDataTransfer():
   # test mode & ignore limits
   myTestOnly = False
   ignoreLimits = False
-  
-  # rsync class instance
-  myRsync = None
-  
+    
   # transfer logbook & date format for logs
   myLogbook = []
   __DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
@@ -168,20 +165,6 @@ class ResifDataTransfer():
     else: path = miscTools.which ( self.__CONFIG['rsync']['rsync command full path'][1] )
     if (not path): raise Exception ( 'rsync command not found on your system' )
     self.__CONFIG['rsync']['rsync command full path'][1] = path
-    # build rsync instance
-    self.myRsync = Rsync (
-      server = self.__CONFIG['rsync']['rsync server'][1], 
-      module = 'INCOMING_' + self.__CONFIG['my resif node']['my node name'][1],
-      port = self.__CONFIG['rsync']['rsync port'][1],
-      timeout = self.__CONFIG['rsync']['rsync timeout'][1],
-      login = self.__CONFIG['my resif node']['my node name'][1].lower(),
-      password = self.__CONFIG['my resif node']['my node password'][1],
-      compress = self.__CONFIG['rsync']['rsync compress'][1],
-      dryrun = self.myTestOnly,
-      command = self.__CONFIG['rsync']['rsync command full path'][1],
-      bwlimit = None if self.ignoreLimits else self.__CONFIG['limits']['bandwidth max'][1],
-      extraargs = self.__CONFIG['rsync']['rsync extra args'][1]
-      )
     # is data directory readable ?
     if ( self.myOperation == self.OPERATIONS['SEND_DATA'] ):
       if not os.access( self.myDirectoryName, os.R_OK | os.X_OK):
@@ -275,10 +258,23 @@ class ResifDataTransfer():
     logging.info ('Writing XML in %s' % xmlfile)
     tree.write(xmlfile)
     # send data + XML file
-    if not self.myTestOnly:
-        logging.info ('Calling rsync to transfer %s and %s' % ( self.myDirectoryName, xmlfile))
-        (stdoutdata,stderrdata) = self.myRsync.push ( source = self.myDirectoryName + ' ' + xmlfile, destination = self.myTransactionID )
-        logging.debug('rsync stderr follows: %s' % stderrdata)
+    myRsync = Rsync (
+      server = self.__CONFIG['rsync']['rsync server'][1], 
+      module = 'INCOMING_' + self.__CONFIG['my resif node']['my node name'][1],
+      port = self.__CONFIG['rsync']['rsync port'][1],
+      timeout = self.__CONFIG['rsync']['rsync timeout'][1],
+      login = self.__CONFIG['my resif node']['my node name'][1].lower(),
+      password = self.__CONFIG['my resif node']['my node password'][1],
+      compress = self.__CONFIG['rsync']['rsync compress'][1],
+      dryrun = self.myTestOnly,
+      command = self.__CONFIG['rsync']['rsync command full path'][1],
+      bwlimit = None if self.ignoreLimits else self.__CONFIG['limits']['bandwidth max'][1],
+      extraargs = self.__CONFIG['rsync']['rsync extra args'][1]
+      )
+    #if not self.myTestOnly:
+    logging.info ('Calling rsync to transfer %s and %s' % ( self.myDirectoryName, xmlfile))
+    (stdoutdata,stderrdata) = self.myRsync.push ( source = self.myDirectoryName + ' ' + xmlfile, destination = self.myTransactionID )
+    logging.debug('rsync stderr follows: %s' % stderrdata)
     os.remove(xmlfile)
     # update logbook
     self.myLogbook.append ( { 'date': now,
@@ -394,13 +390,10 @@ class ResifDataTransfer():
     except KeyboardInterrupt:
       returncode = 1
       logging.error ('keyboard interrupt')
-      raise
     # any other exception
     except Exception, myException:
       returncode = 1
       traceback.print_exc ( None, file = sys.stderr )
-    # executed if no exception was raised
-    else: pass
     # executed anytime
     finally: sys.exit ( returncode )
 
