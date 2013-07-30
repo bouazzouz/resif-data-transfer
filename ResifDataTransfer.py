@@ -292,22 +292,32 @@ class ResifDataTransfer():
   def retrieve_logs ( self ):
     """ runs the RETRIEVE_LOGS operation"""
     # get remote XML file and print it on stdout,
+    myRsync = Rsync (
+      server = self.__CONFIG['rsync']['rsync server'][1], 
+      module = 'TRANSACTION_XML',
+      port = self.__CONFIG['rsync']['rsync port'][1],
+      timeout = self.__CONFIG['rsync']['rsync timeout'][1],
+      login = self.__CONFIG['my resif node']['my node name'][1].lower(),
+      password = self.__CONFIG['my resif node']['my node password'][1],
+      dryrun = self.myTestOnly,
+      command = self.__CONFIG['rsync']['rsync command full path'][1],
+      extraargs = self.__CONFIG['rsync']['rsync extra args'][1]
+      )
     tempxml= os.path.join ( self.__CONFIG['system']['working directory'][1], 'tmpxml' + self.myTransactionID )
-    if not self.myTestOnly:
-        logging.info ("Getting XML file from rsync server for transaction %s" % self.myTransactionID)
-        try:
-            self.myRsync.pull ( remote = os.path.join ( self.myTransactionID, self.TRANSACTION_XML ), local = tempxml )
-        except:
-            msg='Could not retrieve XML file for this transaction.'
-            logging.error ( msg )
-            sys.stderr.write ( msg + '\n' )
-            return 1
-        # cat temp file on stdout
-        with open(tempxml,'r') as f: 
-            data = f.read()
-            sys.stdout.write(data)
-        # remove temp file
-        os.remove(tempxml)    
+    logging.info ("Getting XML file from rsync server for transaction %s" % self.myTransactionID)
+    try:
+        myRsync.pull ( remote = os.path.join ( self.myTransactionID, self.TRANSACTION_XML ), local = tempxml )
+    except:
+        msg='Could not retrieve XML file for this transaction.'
+        logging.error ( msg )
+        sys.stderr.write ( msg + '\n' )
+        return 1
+    # cat temp file on stdout
+    with open(tempxml,'r') as f: 
+        data = f.read()
+        sys.stdout.write(data)
+    # remove temp file
+    os.remove(tempxml)    
     return 0
     
   if __name__ == "__main__":
