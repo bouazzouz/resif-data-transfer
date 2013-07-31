@@ -89,9 +89,6 @@ class ResifDataTransfer():
   # values for debug level
   # http://docs.python.org/2.6/library/logging.html#logging-levels
   __LOG_LEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
-
-  # transaction file
-  TRANSACTION_XML = 'transaction.xml'
    
   # test mode & ignore limits
   myTestOnly = False
@@ -254,7 +251,7 @@ class ResifDataTransfer():
     tree.set_data_type(self.myDataType)
     tree.set_client_size( str(sizeGb) )
     tree.set_comment('data sent to datacentre by client-side application')
-    xmlfile = os.path.join ( self.__CONFIG['system']['working directory'][1], self.TRANSACTION_XML + self.myTransactionID )
+    xmlfile = os.path.join ( self.__CONFIG['system']['working directory'][1], self.myTransactionID + '.xml' )
     logging.info ('Writing XML in %s' % xmlfile)
     tree.write(xmlfile)
     # send data + XML file
@@ -303,10 +300,10 @@ class ResifDataTransfer():
       command = self.__CONFIG['rsync']['rsync command full path'][1],
       extraargs = self.__CONFIG['rsync']['rsync extra args'][1]
       )
-    tempxml= os.path.join ( self.__CONFIG['system']['working directory'][1], 'tmpxml' + self.myTransactionID )
+    tempxml= os.path.join ( self.__CONFIG['system']['working directory'][1], self.myTransactionID + '.xml.tmp' )
     logging.info ("Getting XML file from rsync server for transaction %s" % self.myTransactionID)
     try:
-        myRsync.pull ( remote = 'transaction-%s.xml' % self.myTransactionID, local = tempxml )
+        myRsync.pull ( remote = '%s.xml' % self.myTransactionID, local = tempxml )
     except:
         msg='Could not retrieve XML file for this transaction.'
         logging.error ( msg )
