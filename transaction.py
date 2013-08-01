@@ -21,16 +21,16 @@ class Transaction():
     return ( node.text )
     
   def set_status( self, status):
-    node = self.root.find('status')
-    node.text = status
+    node = self.root.find('status_code')
+    node.text = status.strip()
       
   def set_resif_node( self, nodename):
     node = self.root.find('resif_node')
-    node.text = nodename
+    node.text = nodename.strip()
   
   def set_data_type( self, datatype):
     node = self.root.find('datatype')
-    node.text = datatype
+    node.text = datatype.strip()
 
   def get_data_type ( self ):
     node = self.root.find('datatype')
@@ -46,24 +46,28 @@ class Transaction():
     node.text = size
 
   def set_comment( self, comment):
-    node = self.root.find('comment')
-    node.text = comment
+    node = self.root.find('status_comment')
+    node.text = comment.strip()
 
   def set_filelist( self, files):
     node = self.root.find('filelist')
-    node.text = files
-
+    for f in files:
+        filenode =  SubElement(node,"relativepath")
+        filenode.text = f
+        
   def add_process_result ( self, processname, comment, returncode, files_with_errors=None ):
     myprocess = SubElement(self.root,"process_result")
     myprocessname = SubElement(myprocess,"process_name")
-    myprocessname.text = processname
+    myprocessname.text = processname.strip()
     mycomment = SubElement(myprocess,"comment")
-    mycomment.text = comment
+    mycomment.text = comment.strip()
     myreturncode = SubElement(myprocess,"returncode")
-    myreturncode.text = returncode
-    myerror = SubElement(myprocess,"files_with_errors")
-    myerror.text = files_with_errors
-      
+    myreturncode.text = returncode.strip()
+    myerror = SubElement(myprocess,"rejected_files")
+    for f in files_with_errors:
+        filenode =  SubElement(myerror,"relativepath")
+        filenode.text = f
+    
   def write(self,filename, last_updated = True):
      """write XML tree to filename, atomically. This guarantees that any 
      client downloading the XML file will get a sane content.
@@ -84,11 +88,11 @@ class Transaction():
         self.root = Element("transaction")
         node = SubElement(self.root, "id")
         node.text = self.transactionID
-        SubElement(self.root, "resif_node")
+        SubElement(self.root,"resif_node")
         SubElement(self.root,"datatype")
-        SubElement(self.root,"status")
+        SubElement(self.root,"status_code")
+        SubElement(self.root,"status_comment")
         SubElement(self.root,"last_updated")
-        SubElement(self.root,"comment")
         SubElement(self.root,"client_size")
         SubElement(self.root,"filelist")
         
