@@ -20,32 +20,28 @@ class Transaction():
     return self.root.get("id")
         
   def set_status( self, status):
-    node = self.root.find('status_code')
-    node.text = status.strip()
-      
+    self.root.set ("status", status.strip()) 
+              
   def set_resif_node( self, nodename):
-    node = self.root.find('resif_node')
-    node.text = nodename.strip()
-  
+    self.root.set ("resifnode", nodename.strip()) 
+      
   def set_data_type( self, datatype):
-    node = self.root.find('datatype')
-    node.text = datatype.strip()
+    self.root.set ("datatype", datatype.strip()) 
 
   def get_data_type ( self ):
-    node = self.root.find('datatype')
-    return ( node.text )
+    return self.root.get("datatype")
     
   def set_last_updated( self ):
     now = time.strftime(self.__DATE_FORMAT,time.gmtime())
-    node = self.root.find('last_updated')
+    node = self.root.find('lastupdated')
     node.text = now
   
   def set_client_size( self, size):
-    node = self.root.find('client_size')
+    node = self.root.find('clientsize')
     node.text = size
 
   def set_comment( self, comment):
-    node = self.root.find('status_comment')
+    node = self.root.find('comment')
     node.text = comment.strip()
 
   def set_filelist( self, files):
@@ -55,13 +51,13 @@ class Transaction():
         filenode.text = f
         
   def add_process_result ( self, identifier, comment, rank, returncode, files_with_errors=None ):
-    myprocess = SubElement(self.root,"process_result")
+    myprocess = SubElement(self.root,"process")
     myprocess.set ( "id", identifier.strip() )
     myprocess.set ( "rank", str(rank) )    
     myprocess.set ("returncode", returncode.strip() )
     mycomment = SubElement(myprocess,"comment")
     mycomment.text = comment.strip()
-    myerror = SubElement(myprocess,"rejected_files")    
+    myerror = SubElement(myprocess,"rejectedfiles")    
     for f in files_with_errors:
         filenode =  SubElement(myerror,"relativepath")
         filenode.text = f
@@ -85,12 +81,9 @@ class Transaction():
             ''.join( [random.choice(string.digits) for x in range(4)]) )   
         self.root = Element("transaction")
         self.root.set ("id", self.transactionID) 
-        SubElement(self.root,"resif_node")
-        SubElement(self.root,"datatype")
-        SubElement(self.root,"status_code")
-        SubElement(self.root,"status_comment")
-        SubElement(self.root,"last_updated")
-        SubElement(self.root,"client_size")
+        SubElement(self.root,"comment")
+        SubElement(self.root,"lastupdated")
+        SubElement(self.root,"clientsize")
         SubElement(self.root,"filelist")
         
     # load existing XML from file
