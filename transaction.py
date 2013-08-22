@@ -55,15 +55,14 @@ class Transaction():
         filenode =  SubElement(node,"relativepath")
         filenode.text = f
         
-  def add_process_result ( self, processname, comment, returncode, files_with_errors=None ):
+  def add_process_result ( self, identifier, comment, rank, returncode, files_with_errors=None ):
     myprocess = SubElement(self.root,"process_result")
-    myprocessname = SubElement(myprocess,"process_name")
-    myprocessname.text = processname.strip()
+    myprocess.set ( "id", identifier.strip() )
+    myprocess.set ( "rank", str(rank) )    
+    myprocess.set ("returncode", returncode.strip() )
     mycomment = SubElement(myprocess,"comment")
     mycomment.text = comment.strip()
-    myreturncode = SubElement(myprocess,"returncode")
-    myreturncode.text = returncode.strip()
-    myerror = SubElement(myprocess,"rejected_files")
+    myerror = SubElement(myprocess,"rejected_files")    
     for f in files_with_errors:
         filenode =  SubElement(myerror,"relativepath")
         filenode.text = f
@@ -83,11 +82,10 @@ class Transaction():
     if not filename:
         # compute new transaction id
         self.transactionID = '%s%s' % ( 
-            ''.join( [random.choice(string.ascii_uppercase) for x in range(3)]), 
-            ''.join( [random.choice(string.digits) for x in range(5)]) )   
+            ''.join( [random.choice(string.ascii_uppercase) for x in range(4)]), 
+            ''.join( [random.choice(string.digits) for x in range(4)]) )   
         self.root = Element("transaction")
-        node = SubElement(self.root, "id")
-        node.text = self.transactionID
+        self.root.set ("id", self.transactionID) 
         SubElement(self.root,"resif_node")
         SubElement(self.root,"datatype")
         SubElement(self.root,"status_code")
@@ -101,15 +99,7 @@ class Transaction():
         tree = xml.etree.ElementTree.parse(filename)
         self.root = tree.getroot()
         self.transactionID = self.get_transaction_id()
-    
-    #def set_client_size( self, size):
-    #  node = self.root.find('sent_files/size_on_client')
-    #  node.text = size
-        
-    # sent_files = SubElement(self.root,"sent_files")
-    # SubElement(sent_files,"size_on_client")
-    # SubElement(sent_files,"filelist")
-      
+          
   if __name__ == "__main__":
     pass
   
