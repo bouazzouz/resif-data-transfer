@@ -17,9 +17,8 @@ class Transaction():
   __DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
   
   def get_transaction_id( self ):
-    node = self.root.find('id')
-    return ( node.text )
-    
+    return self.root.get("id")
+        
   def set_status( self, status):
     node = self.root.find('status_code')
     node.text = status.strip()
