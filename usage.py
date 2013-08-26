@@ -40,7 +40,7 @@ The logbook file keeps track of the transfers you made to the datacentre.  It is
 
 {bold}RETURN VALUES{clear}
 
-Returns 0 on success. Some short error messages may be printed on stderr, see also configuration file for log files.
+Returns 0 on success. Some error messages may be printed on stderr, see also configuration file for log files.
 
 {bold}EXAMPLE USAGES{clear}
 
