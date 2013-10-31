@@ -3,7 +3,7 @@
 #
 
 - this program is validated for
-    Redhat Enteprise Linux, v6.0 and above, 32 or 64 bits
+    Redhat Enteprise Linux 6.x and above, 32 or 64 bits
     Debian Linux, Lenny and above, 32 or 64 bits
     however, this should work under any modern Unix/Linux system
 
@@ -79,7 +79,7 @@ There can be only one transferring machine per data type. You may use
 a single machine for all data types.
 
 #
-# INSTALLING 
+# INSTALLATION
 #
 
 - Choose a local user the program will run from:
@@ -112,7 +112,7 @@ $ ResifDataTransfer.py -h
 If not runinng, check that 'ResifDataTransfer.py' has execution bit enabled (chmod +x).
 
 #
-# CONFIGURING
+# CONFIGURATION
 #
 
 By default, configuration file will be searched in base directory, eg:
@@ -130,7 +130,7 @@ $ cp ResifDataTransfer.conf.dist ResifDataTransfer.conf
 Edit according to your requirements.
 
 #
-# UPGRADING
+# UPGRADES
 #
 
 See UPGRADE file.
@@ -146,5 +146,5 @@ You should backup the following files:
 - logbook file
 
 You may want to rotate the general log file using a system tool 
-such as logrotate. You should not edit/alter loogbook contents by hand.
+such as 'logrotate'. You should never edit/alter loogbook contents by hand.
 

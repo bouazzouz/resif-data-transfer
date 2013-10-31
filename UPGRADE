@@ -2,6 +2,8 @@
 # UPGRADING
 #
 
+For safety, backup your current installation directory.
+
 Download the new tarball and move it to your current installation
 directory. E.g, if your installation is in /home/sysop/resif-data-transfer, 
 move the tarball to /home/sysop. Then, extract :
@@ -17,6 +19,4 @@ Your configuration and log files are not replaced.
 
 Run a test transfer (using -t) to check your configuration file.
 Run a logbook dump (using -l) to check your logbook.
-
-
 
