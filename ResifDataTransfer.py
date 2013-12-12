@@ -22,7 +22,7 @@ import traceback
 # custom modules
 import miscTools
 from rsync import Rsync
-from transaction import Transaction
+from ResifDataTransferTransaction import Transaction
 
 class ResifDataTransfer():
   """ 
@@ -31,10 +31,10 @@ class ResifDataTransfer():
     
   # script version (year, julian day)
   APPNAME = 'RESIF data transfer'
-  VERSION = (2013, 211)
+  VERSION = (2013, 346)
 
-  # contact string
-  CONTACT = 'FIXME'
+  # contact string (FIXME : set a @resif.fr contact address)
+  CONTACT = 'pierre.volcke@ujf-grenoble.fr'
 
   # Python versions required : (major,minor)
   # This script does not work yet with the 3.x branch
@@ -56,8 +56,8 @@ class ResifDataTransfer():
   # target directory and data type (SEND_DATA)
   myDirectoryName = None
   DATA_TYPES = dict(
-    VALIDATED_SEISMIC_DATA = 'seismic_data',
-    VALIDATED_SEISMIC_METADATA = 'seismic_metadata')
+    VALIDATED_SEISMIC_DATA_MINISEED = 'seismic_data_miniseed',
+    VALIDATED_SEISMIC_METADATA_DATALESS_SEED = 'seismic_metadata_dataless_seed')
   myDataType = None
   
   # transactionID (SEND_DATA and RETRIEVE_LOGS)
@@ -80,11 +80,11 @@ class ResifDataTransfer():
         'rsync timeout':[int,10], 'rsync extra args':[str,None]
         },
     'logging' : { 'log file':[str,None],'log level':[str,'WARNING'], 'logbook':[str,None] },
-    'limits': { 'weekly max size':[int,150], 'bandwidth max':[int,None] } ,
+    'limits': { 'weekly max size':[int,100], 'bandwidth max':[int,None] } ,
     }
  
   # values for 'my node name'
-  __RESIF_NODES = ('IPGP', 'GEOSCOPE', 'RAP', 'RLBP', 'SISMOB', 'TEST' )
+  __RESIF_NODES = ('GEOSCOPE', 'RAP', 'RLBP', 'SISMOB', 'TEST' )
   
   # values for debug level
   # http://docs.python.org/2.6/library/logging.html#logging-levels
@@ -249,8 +249,8 @@ class ResifDataTransfer():
     tree.set_status('0')
     tree.set_resif_node(self.__CONFIG['my resif node']['my node name'][1])
     tree.set_data_type(self.myDataType)
-    tree.set_client_size( str(sizeGb) )
-    tree.set_comment('data sent to datacentre by client-side application')
+    tree.set_client_size( '%.4f' % sizeGb )
+    tree.set_comment('data sent to datacentre by client-side application, waiting for processing.')
     xmlfile = os.path.join ( self.__CONFIG['system']['working directory'][1], self.myTransactionID + '.xml' )
     logging.info ('Writing XML in %s' % xmlfile)
     tree.write(xmlfile)

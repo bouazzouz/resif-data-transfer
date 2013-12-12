@@ -10,8 +10,8 @@ move the tarball to /home/sysop. Then, extract :
 
 $ tar xvf resif-data-transfer.tar.gz
 
-This will replace your previous installation files.
-Your configuration and log files are not replaced.
+This will replace your previous installation. Your configuration and log 
+files will not be replaced.
 
 #
 # AFTER UPGRADING

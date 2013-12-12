@@ -7,7 +7,7 @@
 # Boolean values may be equal to 1/yes/true/on or 0/no/false/off
 #
 # Every parameters in this file **must exist**, even if most 
-# may be let blank (default value will be used).
+# may be left blank (default value will be used).
 #
 # In some case, badly formatted fields will be replaced 
 # by default values : check your log file entries.
@@ -55,22 +55,22 @@ rsync command auto find = yes
 rsync command full path = /usr/bin/rsync
 
 ; Remote rsync server address
-; This field may be let empty for default value.
+; This field may be left empty for default value.
 rsync server = 
 
 ; TCP port of remote rsync server
-; This field may be let empty for default value.
+; This field may be left empty for default value.
 rsync port = 
 
 ; Compress files during data transfer.
 ; Compression should only be used on slow networks.
-; This field may be let empty for default value.
+; This field may be left empty for default value.
 rsync compress =
 
 ; Timeout for connection to rsync server (seconds).
 ; You don't need to change this unless you get transfer
 ; errors due to very slow network speed.
-; This field may be let empty for default value.
+; This field may be left empty for default value.
 rsync timeout = 
 
 ; Additional parameters for rsync.
@@ -90,8 +90,8 @@ log file =
 
 ; log level
 ; must be one of : DEBUG, INFO, WARNING, ERROR, CRITICAL
-; This field may be let empty for default value.
-log level = DEBUG
+; This field may be left empty for default value.
+log level = INFO
 
 ; Transfer logbook is written into this file (must be writable).
 ; This file contains a history of your previous transfers.
@@ -105,14 +105,14 @@ logbook =
 
 ; Limit I/O bandwith (Kbytes per second)
 ; See also script documentation for bypassing this parameter at runtime.
-; This field may be let empty for default value (no limit)
+; This field may be left empty for default value (no limit)
 bandwidth max = 
 
 ; Maximum amount of data (in Gigabytes) to be sent to remote rsync server 
 ; over a 7 days window. This parameter is specified within RESIF, but may be 
 ; bypassed for special needs, when agreed with remote server operators.
 ; See also script documentation for bypassing this parameter at runtime.
-; This field may be let empty for default value.
+; This field may be left empty for default value.
 weekly max size = 
 
 

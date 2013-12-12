@@ -26,8 +26,8 @@ The {bold}-s{clear} option allows sending a whole directory content to the remot
 {bold}DATA TYPES{clear}
 
 Tells what kind of data is being sent to the remote datacentre :
-\t{bold}seismic_data{clear}\t\tvalidated seismic data
-\t{bold}seismic_metadata{clear}\tvalidated seismic metadata
+\t{bold}seismic_data_miniseed{clear}\t\tvalidated seismic data (miniseed format)
+\t{bold}seismic_metadata_dataless_seed{clear}\tvalidated seismic metadata (dataless seed format)
 
 {bold}TRANSACTION STATUS{clear}
 
@@ -45,7 +45,7 @@ Returns 0 on success. Some error messages may be printed on stderr, see also con
 {bold}EXAMPLE USAGES{clear}
 
 Test sending a directory with seismic data (remove {bold}-t{clear} to perform real sending) :
-$ ResifDataTransfer.py -s /my/data/2011/January/ -d seismic_data -t
+$ ResifDataTransfer.py -s /my/data/2011/January/ -d seismic_data_miniseed -t
 
 Retrieve a transaction status, pretty print with xmllint :
 $ ResifDataTransfer.py -r XMV1374 | xmllint --format -

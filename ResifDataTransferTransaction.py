@@ -106,8 +106,10 @@ class Transaction():
         self.root = Element("transaction")
         self.root.set ("id", self.transactionID) 
         SubElement(self.root,"comment")
+        SubElement(self.root,"datecreated")
         SubElement(self.root,"lastupdated")
-        SubElement(self.root,"clientsize")
+        clientsize = SubElement(self.root,"clientsize")
+        clientsize.set('unit', 'gb')
         SubElement(self.root,"filelist")      
     # load existing XML from file
     else:
