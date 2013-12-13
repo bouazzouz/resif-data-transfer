@@ -240,12 +240,11 @@ class ResifDataTransfer():
       logging.info('Size of data transferred since one week: %.2fGb' % totalsize )
       if (totalsize + sizeGb > self.__CONFIG['limits']['weekly max size'][1]):
 	    raise Exception('Transfer size exceeds limit (see log file for details)')
-    # build XML object, outputs new transaction ID, write XML file
+    # build XML object, write XML file
     logging.info ('Building XML object')
     tree = Transaction()
     self.myTransactionID = tree.get_transaction_id()
     logging.info ( 'Transaction ID is %s' % self.myTransactionID )
-    sys.stdout.write ( self.myTransactionID+'\n' )
     tree.set_status('0')
     tree.set_resif_node(self.__CONFIG['my resif node']['my node name'][1])
     tree.set_data_type(self.myDataType)
@@ -268,9 +267,10 @@ class ResifDataTransfer():
       bwlimit = None if self.ignoreLimits else self.__CONFIG['limits']['bandwidth max'][1],
       extraargs = self.__CONFIG['rsync']['rsync extra args'][1]
       )
-    #if not self.myTestOnly:
     logging.info ('Calling rsync to transfer %s and %s' % ( self.myDirectoryName, xmlfile))
     (stdoutdata,stderrdata) = myRsync.push ( source = self.myDirectoryName + ' ' + xmlfile, destination = self.myTransactionID )
+    # print transaction identifier on stdout
+    sys.stdout.write ( self.myTransactionID + '\n' )
     logging.debug('rsync stderr follows: %s' % stderrdata)
     os.remove(xmlfile)
     # update logbook
