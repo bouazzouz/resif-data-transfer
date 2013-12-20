@@ -106,8 +106,11 @@ class Transaction():
         self.root = Element("transaction")
         self.root.set ("id", self.transactionID) 
         SubElement(self.root,"comment")
-        SubElement(self.root,"datecreated")
-        SubElement(self.root,"lastupdated")
+        datecreated = SubElement(self.root,"datecreated")
+        dateupdated = SubElement(self.root,"lastupdated")
+        now = time.strftime(self.__DATE_FORMAT,time.gmtime())
+        datecreated.text = now
+        dateupdated.text = now
         clientsize = SubElement(self.root,"clientsize")
         clientsize.set('unit', 'gb')
         SubElement(self.root,"filelist")      

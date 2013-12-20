@@ -80,7 +80,7 @@ class ResifDataTransfer():
         'rsync timeout':[int,10], 'rsync extra args':[str,None]
         },
     'logging' : { 'log file':[str,None],'log level':[str,'WARNING'], 'logbook':[str,None] },
-    'limits': { 'weekly max size':[int,100], 'bandwidth max':[int,None] } ,
+    'limits': { 'weekly max size':[int,50], 'bandwidth max':[int,None] } ,
     }
  
   # values for 'my node name'
