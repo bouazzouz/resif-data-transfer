@@ -112,7 +112,7 @@ class Rsync():
     logging.info ( 'Rsync return code is %i (0 means success)' % proc.returncode )
     if proc.returncode != 0 :
       logging.debug ( 'rsync stderr : %s ' % stderrdata )
-      raise Exception('Rsync returned an error. Transfer aborted.')
+      raise Exception('Rsync returned an error (see logs for details). Transfer aborted.')
     # return file list
     return ( stdoutdata, stderrdata )  
     

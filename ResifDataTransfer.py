@@ -84,7 +84,7 @@ class ResifDataTransfer():
     }
  
   # values for 'my node name'
-  __RESIF_NODES = ('GEOSCOPE', 'RAP', 'RLBP', 'SISMOB', 'TEST' )
+  __RESIF_NODES = ('GEOSCOPE', 'OMIV', 'RAP', 'RLBP', 'SISMOB', 'TEST' )
   
   # values for debug level
   # http://docs.python.org/2.6/library/logging.html#logging-levels

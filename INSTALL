@@ -26,6 +26,8 @@ not work with  Python 3.x. Check your python interprter by entering:
 
 $ /usr/bin/env python --version
 
+- it is highly advised that your system time be synchronized (eg. using NTP)
+
 # 
 # NETWORK REQUIREMENTS
 #
