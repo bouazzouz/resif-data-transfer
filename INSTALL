@@ -28,6 +28,10 @@ $ /usr/bin/env python --version
 
 - it is highly advised that your system time be synchronized (eg. using NTP)
 
+This package comes with an argparse library (http://code.google.com/p/argparse/)
+providing argument parsing support for Python < 2.7 . This library may be removed 
+in a future release. It is advised that your system supports Python 2.7 branch.
+
 # 
 # NETWORK REQUIREMENTS
 #
