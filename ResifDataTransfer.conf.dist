@@ -93,11 +93,10 @@ log file =
 ; This field may be left empty for default value.
 log level = INFO
 
-; Transfer logbook is written into this file (must be writable).
-; This file contains a history of your previous transfers.
-; This file is JSON formatted, and may be read with provided tool.
-; If file does not exist, it will be created.
-; You may want to include this file in your backups.
+; Transfer logbook is written into this file. This file contains a history 
+; of your previous transfers. This file is JSON formatted, and may be read 
+; with provided tool. If this file does not exist, it will be created.
+; You may want to include it in your backups.
 ; This field is mandatory.
 logbook = 
 
