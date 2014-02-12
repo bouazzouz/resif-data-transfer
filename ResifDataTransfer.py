@@ -31,7 +31,7 @@ class ResifDataTransfer():
     
   # script version (year, julian day)
   APPNAME = 'RESIF data transfer'
-  VERSION = (2013, 346)
+  VERSION = (2014, 43)
 
   # contact string (FIXME : set a @resif.fr contact address)
   CONTACT = 'pierre.volcke@ujf-grenoble.fr'
@@ -331,8 +331,8 @@ class ResifDataTransfer():
         version = str ( ResifDataTransfer.VERSION[0] ) + '.' + str ( ResifDataTransfer.VERSION[1] ),
         config = ResifDataTransfer.myConfigurationFile,
         contact = ResifDataTransfer.CONTACT,
-        vmin = str(ResifDataTransfer.__PYTHON_VERSION_MIN[0]) + "." + str(ResifDataTransfer.__PYTHON_VERSION_MIN[1]),
-        vmax = str(ResifDataTransfer.__PYTHON_VERSION_MAX[0]) + "." + str(ResifDataTransfer.__PYTHON_VERSION_MAX[1]),
+        vmin = str ( ResifDataTransfer.__PYTHON_VERSION_MIN ),
+        vmax = str ( ResifDataTransfer.__PYTHON_VERSION_MAX ),
         bold = '\033[1m', clear = '\033[0m' )
       
       # set some default parameters
