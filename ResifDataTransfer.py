@@ -39,8 +39,8 @@ class ResifDataTransfer():
   # Python versions required : (major,minor)
   # This script does not work yet with the 3.x branch
   # http://www.python.org/download/releases/
-  __PYTHON_VERSION_MIN = (2, 6)
-  __PYTHON_VERSION_MAX = (2, 7)
+  __PYTHON_VERSION_MIN = 2.6
+  __PYTHON_VERSION_MAX = 2.7
   
   # Platforms on which this script is validated
   # http://docs.python.org/library/platform.html

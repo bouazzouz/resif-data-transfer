@@ -55,8 +55,8 @@ def check_python ( min, max ):
   returns True if running Python version is between
   min and max version, else returns False
   """
-  myversion = sys.version_info
-  return ( min < myversion < max )
+  myversion = sys.version_info[0] + float ( '0.' + str(sys.version_info[1]) )  
+  return ( min <= myversion <= max )
     
 def check_platform( validatedPlatforms ):
   """

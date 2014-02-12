@@ -28,6 +28,8 @@ my node password =
 [system]
 
 ; a directory where the script may write temporary files.
+; Shell characters (eg: ~) are not expanded. It is advised to
+; set the full directory path here.
 ; this field is mandatory
 working directory = 
 
