@@ -44,6 +44,9 @@ disk usage command full path = /usr/bin/du
 
 ; Arguments for calling the disk usage command.
 ; If you are not using du, your command behaviour must be the same as GNU du.
+; These arguments should not need to be changed, unless using custom 
+; rsync parameters in 'rsync extra args' (see below) altering the way
+; rsync follows symbolic links. 
 disk usage command arguments = --bytes --summarize
 
 [rsync]
