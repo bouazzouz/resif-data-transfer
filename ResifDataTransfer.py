@@ -31,7 +31,7 @@ class ResifDataTransfer():
     
   # script version (year, julian day)
   APPNAME = 'RESIF data transfer'
-  VERSION = (2014, 85)
+  VERSION = (2014, 262)
 
   # contact string (FIXME : set a @resif.fr contact address)
   CONTACT = 'pierre.volcke@ujf-grenoble.fr'
@@ -84,7 +84,7 @@ class ResifDataTransfer():
     }
  
   # values for 'my node name'
-  __RESIF_NODES = ('GEOSCOPE', 'OMIV', 'RAP', 'RLBP', 'SISMOB', 'DASE', 'TEST' )
+  __RESIF_NODES = ('GEOSCOPE', 'OMIV', 'RAP', 'RLBP', 'RLBP-OCA', 'SISMOB', 'DASE', 'TEST' )
   
   # values for debug level
   # http://docs.python.org/2.6/library/logging.html#logging-levels
