@@ -12,6 +12,8 @@
 # In some case, badly formatted fields will be replaced 
 # by default values : check your log file entries.
 #
+# This file must be protected from read by others users (eg: chmod 600)
+#
 # When upgrading the script, backup this file for reuse.
 #
 
@@ -100,7 +102,8 @@ log level = INFO
 
 ; Transfer logbook is written into this file. This file contains a history 
 ; of your previous transfers. This file is JSON formatted, and may be read 
-; with provided tool. If this file does not exist, it will be created.
+; with provided tool. If this file does not exist, it will be created 
+; automatically and should not be edited by hand.
 ; You may want to include it in your backups.
 ; This field is mandatory.
 logbook = 

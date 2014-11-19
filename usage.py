@@ -29,10 +29,12 @@ Tells what kind of data is being sent to the remote datacentre :
 \t{bold}seismic_data_miniseed{clear}\t\tvalidated seismic data (miniseed format)
 \t{bold}seismic_metadata_dataless_seed{clear}\tvalidated seismic metadata (dataless seed format)
 
+{bold}Warning :{clear} Metadata integration is currently not automated on the datacentre side. This is a work in progress. This means your metadata is integrated manually and the XML file returned by --retrieve-logs option must *not* be taken into account.
+
 {bold}TRANSACTION STATUS{clear}
 
 The {bold}-r{clear} option allows retrieving status information (XML formatted) for a given transaction identifier. Status is printed on stdout.
-FIXME : XML format to be described.
+XML content is described into main documentation.
 
 {bold}LOGBOOK{clear}
 

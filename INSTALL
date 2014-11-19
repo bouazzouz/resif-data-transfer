@@ -135,6 +135,15 @@ $ cp ResifDataTransfer.conf.dist ResifDataTransfer.conf
 
 Edit according to your requirements.
 
+For security reasons, configuration file must only be readable by file owner 
+and group. On Unix/Linux system, you may set configuration file permissions as:
+
+$ chmod 600 ResifDataTransfer.conf
+
+or
+
+$ chmod o-rwx ResifDataTransfer.conf
+
 #
 # UPGRADES
 #
