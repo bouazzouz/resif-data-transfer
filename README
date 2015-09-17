@@ -8,6 +8,7 @@ online help :
 
 $ ResifDataTransfer.py --help
 
-See also docs/ directory for additional documentations.
+docs/ directory contains deprecated documentations.
+Updated documentations available at https://extra.core-cloud.net/projets/resif/
 
 See INSTALL for installation instructions.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import xml.etree.ElementTree
@@ -104,6 +104,8 @@ class Transaction():
             ''.join( [random.choice(string.ascii_uppercase) for x in range(4)]), 
             ''.join( [random.choice(string.digits) for x in range(4)]) )   
         self.root = Element("transaction")
+        comment = xml.etree.ElementTree.Comment("Documentation : https://extra.core-cloud.net/projets/resif/wiki%20resif%20si/ResifDataTransfer-ManuelUtilisateur.aspx")
+        self.root.append ( comment )        
         self.root.set ("id", self.transactionID) 
         SubElement(self.root,"comment")
         datecreated = SubElement(self.root,"datecreated")

@@ -31,10 +31,10 @@ class ResifDataTransfer():
     
   # script version (year, julian day)
   APPNAME = 'RESIF data transfer'
-  VERSION = (2014, 323)
+  VERSION = (2015, 257)
 
-  # contact string (FIXME : set a @resif.fr contact address)
-  CONTACT = 'pierre.volcke@ujf-grenoble.fr'
+  # contact string
+  CONTACT = 'resif-dc@ujf-grenoble.fr'
 
   # Python versions required : (major,minor)
   # This script does not work yet with the 3.x branch
