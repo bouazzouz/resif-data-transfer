@@ -22,7 +22,7 @@ $ du --version
 
 - you need a working Python interpreter on your system (version 
 2.6.6 and above), with its full standard library. This program does 
-not work with  Python 3.x. Check your python interprter by entering:
+not work with  Python 3.x. Check your python interpreter by entering:
 
 $ /usr/bin/env python --version
 
