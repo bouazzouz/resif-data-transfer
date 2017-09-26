@@ -31,6 +31,9 @@ class Transaction():
               
   def set_resif_node( self, nodename):
     self.root.set ("resifnode", nodename.strip()) 
+
+  def get_resif_node( self ):
+    return self.root.get ("resifnode")
       
   def set_data_type( self, datatype):
     self.root.set ("datatype", datatype.strip()) 
@@ -42,10 +45,18 @@ class Transaction():
     now = time.strftime(self.__DATE_FORMAT,time.gmtime())
     node = self.root.find('lastupdated')
     node.text = now
+
+  def get_last_updated( self ):
+    node = self.root.find("lastupdated")
+    return node.text
   
   def set_client_size( self, size):
     node = self.root.find('clientsize')
     node.text = size
+
+  def get_client_size( self ):
+    node = self.root.find('clientsize')
+    return node.text
 
   def set_comment( self, comment):
     node = self.root.find('comment')
@@ -85,7 +96,17 @@ class Transaction():
     for f in files_with_errors:
         filenode =  SubElement(myerror,"relativepath")
         filenode.text = f
-    
+
+  
+  def get_date_created( self ):
+    node = self.root.find("datecreated")
+    return node.text
+
+  def get_unit(self):
+    node = self.root.find("clientsize")
+    return node.get("unit")
+
+
   def write(self,filename, last_updated = True):
      """write XML tree to filename, atomically. This guarantees that any 
      client downloading the XML file will get a sane content.
